@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Track Your Package - IDHS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        /* Main Content */
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .tracking-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+        }
+        /* Left Column - Main Tracking */
+        .tracking-card {
+            background: white;
+            border-radius: 8px;
+            padding: 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .tracking-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .shipment-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .tracking-number {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        .delivery-status {
+            background: #d32f2f;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .delivery-status i {
+            font-size: 28px;
+        }
+        .delivery-text {
+            flex: 1;
+        }
+        .delivery-text strong {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .delivery-text span {
+            font-size: 14px;
+        }
+        .delivery-details {
+            padding: 30px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            color: #666;
+            font-size: 15px;
+        }
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .detail-value a {
+            color: #0066cc;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .detail-value a:hover {
+            text-decoration: underline;
+        }
+        /* Timeline */
+        .timeline-section {
+            padding: 30px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .timeline-item {
+            display: flex;
+            gap: 20px;
+            position: relative;
+            padding-bottom: 35px;
+        }
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 45px;
+            bottom: 0;
+            width: 2px;
+            background: #0066cc;
+        }
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #0066cc;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 16px;
+            z-index: 1;
+            position: relative;
+        }
+        .timeline-content {
+            flex: 1;
+            padding-top: 5px;
+        }
+        .timeline-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .timeline-location {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+        .timeline-date {
+            color: #888;
+            font-size: 13px;
+        }
+        .view-all-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 20px;
+        }
+        .view-all-link:hover {
+            text-decoration: underline;
+        }
+        /* Right Column - Sidebar */
+        .sidebar-card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .sidebar-card h5 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .track-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .track-input:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+        .track-btn {
+            width: 100%;
+            background: #0066cc;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .track-btn:hover {
+            background: #0052a3;
+        }
+        /* Fraud Alert */
+        .fraud-alert {
+            background: #fff9e6;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 4px;
+        }
+        .fraud-alert h6 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        .fraud-alert h6 i {
+            font-size: 20px;
+            color: #333;
+        }
+        .fraud-alert p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        .fraud-alert-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-block;
+            border: 1px solid #0066cc;
+            padding: 8px 16px;
+            border-radius: 4px;
+        }
+        .fraud-alert-link:hover {
+            background: #0066cc;
+            color: white;
+        }
+        /* Footer */
+        .footer {
+            background: #351c15;
+            color: white;
+            padding: 50px 0 30px;
+            margin-top: 60px;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+        }
+        .footer-section h5 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .footer-section ul {
+            list-style: none;
+        }
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+        .footer-section ul li a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .footer-section ul li a:hover {
+            color: white;
+        }
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 30px auto 0;
+            padding: 20px 20px 0;
+            border-top: 1px solid #554640;
+            text-align: center;
+            color: #ccc;
+            font-size: 13px;
+        }
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .social-links a {
+            color: white;
+            font-size: 18px;
+        }
+        .social-links a:hover {
+            color: #ffb500;
+        }
+        @media (max-width: 768px) {
+            .tracking-layout {
+                grid-template-columns: 1fr;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-dark">
+        <div class="row py-2 px-lg-5">
+            <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center text-white">
+                    <small><i class="fa fa-phone-alt mr-2"></i>+92-333-5170474</small>
+                    <small class="px-3">|</small>
+                    <small><i class="fa fa-envelope mr-2"></i>idhscourier@gmail.com</small>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-white px-2" target="_blank" href="https://web.facebook.com/people/IDHS-international-courier-services/100063862313331/">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="text-white px-2" target="_blank" href="https://www.instagram.com/idhscourier?igsh=MzZia3JpNHMyMjlw">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a class="text-white pl-2" target="_blank" href="https://www.youtube.com/@idhsinternationalcourier">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="index.html" class="navbar-brand ml-lg-3">
+                <img src="img/logo.png" style="width: 270px;">
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav m-auto py-0">
+                    <a href="index.html" class="nav-item nav-link">Home</a>
+                    <a href="tracking.html" class="nav-item nav-link">Tracking</a>
+                    <a href="about-us.html" class="nav-item nav-link">About</a>
+                    <a href="services.html" class="nav-item nav-link">Services</a>
+                    <a href="contact.html" class="nav-item nav-link">Contact</a>
+                </div>
+                <a href="contact.html#contact" class="btn btn-primary py-2 px-4 d-none d-lg-block">Get A Quote</a>
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+    <!-- Main Content -->
+    <div class="content-wrapper">
+        <div class="tracking-layout">
+            <!-- Left Column - Main Tracking -->
+            <div>
+                <div class="tracking-card">
+                    <!-- Tracking Header -->
+                    <div class="tracking-header">
+                        <div class="shipment-label">Your shipment</div>
+                        <div class="tracking-number">1Z2902E3411093424</div>
+                    </div>
+
+                    <!-- Delivery Status -->
+                    <div class="delivery-status">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="delivery-text">
+                            <strong>Delivered On</strong>
+                            <span>Wednesday, November 05 at 3:23 P.M. at Mail Room</span>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Details -->
+                    <div class="delivery-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Delivered To</span>
+                            <span class="detail-value">MONTREAL, CA</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Received By</span>
+                            <span class="detail-value">DONALD</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label"></span>
+                            <span class="detail-value">
+                                <a href="#">
+                                    Proof of Delivery
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Timeline -->
+                    <div class="timeline-section">
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <i class="fas fa-tag"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Label Created</div>
+                                <div class="timeline-location">United Arab Emirates</div>
+                                <div class="timeline-date">11/04/2025, 11:48 A.M</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Picked Up</div>
+                                <div class="timeline-location">Dubai, United Arab Emirates</div>
+                                <div class="timeline-date">10/05/2025, 1:24 P.M</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <i class="fas fa-plane"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">On the Way</div>
+                                <div class="timeline-location">In Transit</div>
+                                <div class="timeline-date">11/05/2025, 6:07 A.M</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Out for Delivery</div>
+                                <div class="timeline-location">Lemine, BC, Canada</div>
+                                <div class="timeline-date">11/05/2025, 10:17 A.M</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Delivered</div>
+                                <div class="timeline-location">MONTREAL, CA</div>
+                                <div class="timeline-date">11/05/2025, 3:23 P.M</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="padding: 0 30px 30px;">
+                        <a href="#" class="view-all-link">
+                            View All Shipping Details
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Sidebar -->
+            <div>
+                <!-- Track Another Package -->
+                <div class="sidebar-card">
+                    <h5>Track Another Package</h5>
+                    <input type="text" class="track-input" placeholder="Enter Tracking Number">
+                    <button class="track-btn">Track</button>
+                </div>
+
+                <!-- Fraud Alert -->
+                <div class="sidebar-card fraud-alert">
+                    <h6>
+                        <i class="fas fa-lock"></i>
+                        Stay Safe - Avoid Fraud and Scams
+                    </h6>
+                    <p>Received a text, call, or email that seems fishy? Don't respond to it.</p>
+                    <a href="#" class="fraud-alert-link">Tips to Avoid Fraud</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-white mt-5 py-5 px-sm-3 px-md-5">
+        <div class="row pt-5">
+            <div class="col-lg-7 col-md-6">
+                <div class="row">
+                    <div class="col-md-6 mb-5">
+                        <h3 class="text-primary mb-4">Get In Touch</h3>
+                        <p><i class="fa fa-map-marker-alt mr-2"></i>B 18 AL BILAL PLAZA Chandni Chowk Flyover Satellite Town, Rawalpindi Pakistan</p>
+                        <p><i class="fa fa-mobile mr-2"></i>+92-333-5170474</p>
+                        <p><i class="fa fa-phone-alt mr-2"></i>051-4851197, 051-4927026</p>
+                        <p><i class="fa fa-envelope mr-2"></i>idhscourier@gmail.com</p>
+                        <div class="d-flex justify-content-start mt-4">
+                            <a class="btn btn-outline-light btn-social mr-2" target="_blank" href="https://web.facebook.com/people/IDHS-international-courier-services/100063862313331/"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-outline-light btn-social mr-2" target="_blank" href="https://www.youtube.com/@idhsinternationalcourier"><i class="fab fa-youtube"></i></a>
+                            <a class="btn btn-outline-light btn-social" target="_blank" href="https://www.instagram.com/idhscourier?igsh=MzZia3JpNHMyMjlw"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-5">
+                        <h3 class="text-primary mb-4">Quick Links</h3>
+                        <div class="d-flex flex-column justify-content-start">
+                            <a class="text-white mb-2" href="index.html"><i class="fa fa-angle-right mr-2"></i>Home</a>
+                            <a class="text-white mb-2" href="about-us.html"><i class="fa fa-angle-right mr-2"></i>About Us</a>
+                            <a class="text-white mb-2" href="services.html"><i class="fa fa-angle-right mr-2"></i>Our Services</a>
+                            <a class="text-white" href="contact.html"><i class="fa fa-angle-right mr-2"></i>Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-6 mb-5">
+                <h3 class="text-primary mb-4">Newsletter</h3>
+                <div class="w-100">
+                    <div class="input-group">
+                        <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary px-4">Sign Up</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid bg-dark text-white border-top py-4 px-sm-3 px-md-5" style="border-color: #3E3E4E !important;">
+        <div class="row">
+            <div class="col-lg-6 text-center text-md-left mb-3 mb-md-0">
+                <p class="m-0 text-white">© <a href="#">IDHS</a>. All Rights Reserved. 
+				Designed by <a href="https://htmlcodex.com">HTML Codex</a>
+                </p>
+            </div>
+            <div class="col-lg-6 text-center text-md-right">
+                <ul class="nav d-inline-flex">
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">Privacy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">Terms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">FAQs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">Help</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/counterup/counterup.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+</body>
+</html>

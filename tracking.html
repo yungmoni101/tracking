@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Tracking - IDHS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .tracking-container {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .tracking-header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .tracking-number {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .tracking-id {
+            font-size: 18px;
+            font-weight: 600;
+            color: #212529;
+        }
+        .delivery-status {
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .delivery-status i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        .delivery-info {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .info-label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+        .info-value {
+            color: #212529;
+            font-weight: 600;
+        }
+        .tracking-timeline {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .timeline-item {
+            display: flex;
+            position: relative;
+            padding-bottom: 30px;
+        }
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            bottom: -5px;
+            width: 2px;
+            background: #007bff;
+        }
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+        .timeline-icon.completed {
+            background: #28a745;
+        }
+        .timeline-content {
+            flex: 1;
+        }
+        .timeline-title {
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 5px;
+        }
+        .timeline-location {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+        .timeline-date {
+            color: #6c757d;
+            font-size: 13px;
+        }
+        .track-another {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .track-another h5 {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .fraud-alert {
+            background: #f8f9fa;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .fraud-alert h6 {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .fraud-alert h6 i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        .view-all-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+        }
+        .view-all-link:hover {
+            text-decoration: underline;
+        }
+        .view-all-link i {
+            margin-left: 5px;
+        }
+        #trackingResults {
+            display: none;
+        }
+        .track-form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .track-form-container h2 {
+            margin-bottom: 20px;
+            color: #212529;
+        }
+        .track-form-container .form-group {
+            margin-bottom: 20px;
+        }
+        .track-form-container input {
+            padding: 15px;
+            font-size: 16px;
+        }
+        .track-form-container button {
+            padding: 15px 40px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-dark">
+        <div class="row py-2 px-lg-5">
+            <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center text-white">
+                    <small><i class="fa fa-phone-alt mr-2"></i>+92-333-5170474</small>
+                    <small class="px-3">|</small>
+                    <small><i class="fa fa-envelope mr-2"></i>idhscourier@gmail.com</small>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-white px-2" target="_blank" href="https://web.facebook.com/people/IDHS-international-courier-services/100063862313331/">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="text-white px-2" target="_blank" href="https://www.instagram.com/idhscourier?igsh=MzZia3JpNHMyMjlw">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a class="text-white pl-2" target="_blank" href="https://www.youtube.com/@idhsinternationalcourier">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="index.html" class="navbar-brand ml-lg-3">
+                <img src="img/logo.png" style="width: 270px;">
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav m-auto py-0">
+                    <a href="index.html" class="nav-item nav-link">Home</a>
+                    <a href="tracking.html" class="nav-item nav-link active">Tracking</a>
+                    <a href="about-us.html" class="nav-item nav-link">About</a>
+                    <a href="services.html" class="nav-item nav-link">Services</a>
+                    <a href="contact.html" class="nav-item nav-link">Contact</a>
+                </div>
+                <a href="contact.html#contact" class="btn btn-primary py-2 px-4 d-none d-lg-block">Get A Quote</a>
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+    
+    <!-- Page Header Start -->
+    <div class="jumbotron jumbotron-fluid mb-5">
+        <div class="container text-center py-5">
+            <h1 class="text-white display-3">Track Your Shipment</h1>
+            <div class="d-inline-flex align-items-center text-white">
+                <p class="m-0"><a class="text-white" href="index.html">Home</a></p>
+                <i class="fa fa-circle px-3" style="font-size: 8px;"></i>
+                <p class="m-0">Tracking</p>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- Tracking Section Start -->
+    <div class="container-fluid py-5">
+        <div class="container">
+            <!-- Tracking Form -->
+            <div id="trackingForm" class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="track-form-container">
+                        <h2>Track Your Package</h2>
+                        <p class="text-muted mb-4">Enter your tracking number to get real-time updates on your shipment</p>
+                        <form id="trackForm">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="trackingNumber" placeholder="Enter Tracking Number" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Track Package</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tracking Results -->
+            <div id="trackingResults">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="tracking-container">
+                            <!-- Tracking Header -->
+                            <div class="tracking-header">
+                                <div class="tracking-number">Your shipment</div>
+                                <div class="tracking-id" id="displayTrackingNumber"></div>
+                            </div>
+
+                            <!-- Delivery Status -->
+                            <div class="mb-3">
+                                <div class="delivery-status" id="deliveryStatus">
+                                    <i class="fas fa-check-circle"></i>
+                                    <div>
+                                        <strong>Delivered On</strong><br>
+                                        <span id="deliveryDate">Wednesday, November 05 at 3:23 P.M. at Mail Room</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Delivery Info -->
+                            <div class="delivery-info">
+                                <div class="info-row">
+                                    <span class="info-label">Delivered To</span>
+                                    <span class="info-value" id="deliveredTo">RAWALPINDI, PAKISTAN</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Received By</span>
+                                    <span class="info-value" id="receivedBy">CUSTOMER</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label"></span>
+                                    <a href="#" class="view-all-link">Proof of Delivery <i class="fas fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+
+                            <!-- Tracking Timeline -->
+                            <div class="tracking-timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-icon completed">
+                                        <i class="fas fa-tag"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-title">Label Created</div>
+                                        <div class="timeline-location">United Arab Emirates</div>
+                                        <div class="timeline-date">11/04/2025, 11:48 A.M</div>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="timeline-icon completed">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-title">Picked Up</div>
+                                        <div class="timeline-location">Dubai, United Arab Emirates</div>
+                                        <div class="timeline-date">10/05/2025, 1:24 P.M</div>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="timeline-icon completed">
+                                        <i class="fas fa-plane"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-title">On the Way</div>
+                                        <div class="timeline-location">In Transit</div>
+                                        <div class="timeline-date">10/05/2025, 6:07 A.M</div>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="timeline-icon completed">
+                                        <i class="fas fa-truck"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-title">Out for Delivery</div>
+                                        <div class="timeline-location">Rawalpindi, Pakistan</div>
+                                        <div class="timeline-date">11/05/2025, 10:17 A.M</div>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="timeline-icon completed">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-title">Delivered</div>
+                                        <div class="timeline-location">RAWALPINDI, PAKISTAN</div>
+                                        <div class="timeline-date">11/05/2025, 3:23 P.M</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <a href="#" class="view-all-link">View All Shipping Details <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <!-- Track Another Package -->
+                        <div class="track-another">
+                            <h5>Track Another Package</h5>
+                            <form id="trackAnotherForm">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Enter Tracking Number">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block">Track</button>
+                            </form>
+                        </div>
+
+                        <!-- Fraud Alert -->
+                        <div class="fraud-alert">
+                            <h6><i class="fas fa-lock"></i> Stay Safe - Avoid Fraud and Scams</h6>
+                            <p class="mb-2" style="font-size: 14px;">Received a text, call, or email that seems fishy? Don't respond to it.</p>
+                            <a href="#" class="btn btn-outline-primary btn-sm">Tips to Avoid Fraud</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Tracking Section End -->
+
+    <!-- Get In Touch & Quick Links Start -->
+    <div class="container-fluid bg-dark text-white mt-5 py-5 px-sm-3 px-md-5">
+        <div class="row pt-5">
+            <div class="col-lg-7 col-md-6">
+                <div class="row">
+                    <div class="col-md-6 mb-5">
+                        <h3 class="text-primary mb-4">Get In Touch</h3>
+                        <p><i class="fa fa-map-marker-alt mr-2"></i>B 18 AL BILAL PLAZA Chandni Chowk Flyover Satellite Town, Rawalpindi Pakistan</p>
+                        <p><i class="fa fa-mobile mr-2"></i>+92-333-5170474</p>
+                        <p><i class="fa fa-phone-alt mr-2"></i>051-4851197, 051-4927026</p>
+                        <p><i class="fa fa-envelope mr-2"></i>idhscourier@gmail.com</p>
+                        <div class="d-flex justify-content-start mt-4">
+                            <a class="btn btn-outline-light btn-social mr-2" target="_blank" href="https://web.facebook.com/people/IDHS-international-courier-services/100063862313331/"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-outline-light btn-social mr-2" target="_blank" href="https://www.youtube.com/@idhsinternationalcourier"><i class="fab fa-youtube"></i></a>
+                            <a class="btn btn-outline-light btn-social" target="_blank" href="https://www.instagram.com/idhscourier?igsh=MzZia3JpNHMyMjlw"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-5">
+                        <h3 class="text-primary mb-4">Quick Links</h3>
+                        <div class="d-flex flex-column justify-content-start">
+                            <a class="text-white mb-2" href="index.html"><i class="fa fa-angle-right mr-2"></i>Home</a>
+                            <a class="text-white mb-2" href="about-us.html"><i class="fa fa-angle-right mr-2"></i>About Us</a>
+                            <a class="text-white mb-2" href="services.html"><i class="fa fa-angle-right mr-2"></i>Our Services</a>
+                            <a class="text-white" href="contact.html"><i class="fa fa-angle-right mr-2"></i>Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-6 mb-5">
+                <h3 class="text-primary mb-4">Newsletter</h3>
+                <div class="w-100">
+                    <div class="input-group">
+                        <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary px-4">Sign Up</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Get In Touch & Quick Links End -->
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-white border-top py-4 px-sm-3 px-md-5" style="border-color: #3E3E4E !important;">
+        <div class="row">
+            <div class="col-lg-6 text-center text-md-left mb-3 mb-md-0">
+                <p class="m-0 text-white">© <a href="#">IDHS</a>. All Rights Reserved. Designed by <a href="https://htmlcodex.com">HTML Codex</a></p>
+            </div>
+            <div class="col-lg-6 text-center text-md-right">
+                <ul class="nav d-inline-flex">
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">Privacy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">Terms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">FAQs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">Help</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/counterup/counterup.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Handle main tracking form
+            $('#trackForm').on('submit', function(e) {
+                e.preventDefault();
+                var trackingNumber = $('#trackingNumber').val().trim();
+                
+                if (trackingNumber) {
+                    $('#displayTrackingNumber').text(trackingNumber);
+                    $('#trackingForm').fadeOut(300, function() {
+                        $('#trackingResults').fadeIn(300);
+                        $('html, body').animate({
+                            scrollTop: $('#trackingResults').offset().top - 100
+                        }, 500);
+                    });
+                }
+            });
+
+            // Handle track another package form
+            $('#trackAnotherForm').on('submit', function(e) {
+                e.preventDefault();
+                var trackingNumber = $(this).find('input').val().trim();
+                
+                if (trackingNumber) {
+                    $('#displayTrackingNumber').text(trackingNumber);
+                    $(this).find('input').val('');
+                    $('html, body').animate({
+                        scrollTop: $('#trackingResults').offset().top - 100
+                    }, 500);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

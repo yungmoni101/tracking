@@ -1,0 +1,943 @@
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var aboutLink = document.querySelector('.navbar-nav .nav-link[href="about.php"], #aboutLink');
+    if (aboutLink) {
+        aboutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Find About and Why Choose Us sections
+            var aboutSection = document.querySelector('.container-fluid.py-5');
+            // Find ALL Why Choose Us sections by heading text (robust: search all .container-fluid for the right heading and bullet points)
+            var whyChooseUsSections = Array.from(document.querySelectorAll('.container-fluid')).filter(function(el) {
+                return el.innerText.includes('Why Choose Us') &&
+                    el.innerText.includes('Faster, Safe and Trusted Courier & Cargo Services') &&
+                    el.innerText.includes('Global Reach with Local Expertise') &&
+                    el.innerText.includes('24/7 Customer Support');
+            });
+            // Hide all .container-fluid except navbar/topbar/footer/About/ALL Why Choose Us
+            document.querySelectorAll('.container-fluid').forEach(function(el) {
+                if (
+                    el.classList.contains('bg-dark') ||
+                    el.classList.contains('p-0') ||
+                    el.classList.contains('text-white') ||
+                    el.querySelector('nav.navbar') ||
+                    el.innerHTML.includes('All Rights Reserved')
+                ) {
+                    el.style.display = '';
+                } else if (el === aboutSection || whyChooseUsSections.includes(el)) {
+                    el.style.display = '';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+            // Explicitly hide any section with Get A Quote/Request A Free Quote
+            document.querySelectorAll('.container-fluid').forEach(function(el) {
+                if (el.innerText.includes('Get A Quote') && el.innerText.includes('Request A Free Quote')) {
+                    el.style.display = 'none';
+                }
+            });
+            // Optionally scroll to About Us section
+            if (aboutSection) {
+                aboutSection.scrollIntoView({behavior: 'smooth'});
+            }
+        });
+    }
+});
+</script>
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <title>IDHS - INTERNATIONAL COURIER & CARGO SERVICES</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="img/logo.png">
+    
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Courier Services, Cargo Delivery, Same-Day Delivery, Express Shipping, International Shipping, Logistics Solutions, Fast Courier Service, Cargo Shipping, Online Parcel Tracking, Domestic Shipping, Reliable Delivery Service, Door-to-Door Delivery, Cargo Freight Services, Courier and Freight Services, Affordable Courier Service, Logistics and Transportation, Package Delivery Service, Global Shipping, Freight Forwarding, Same-Day Cargo Service" name="keywords">
+    <meta content="IDHS Courier & Cargo Services offers fast, reliable, and affordable shipping solutions for both domestic and international deliveries. Whether you need same-day courier services, cargo freight, or secure parcel tracking, we ensure your shipments reach their destination on time. Trust us for all your logistics needs." name="description">
+
+    <meta property="og:title" content="IDHS international Courier & Cargo Services">
+    <meta property="og:description" content="Fast, reliable, and affordable shipping solutions for domestic and international deliveries.">
+    <meta property="og:image" content="img/logo.png">
+    <meta property="og:url" content="https://idhs.com.pk/">
+
+    <!-- Favicon -->
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="../GepE2AP37Yzz.com/ajax/libs/font-awesome/EbzxVbVh7D49.0/css/hltpFbLKHwBg.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-J20GDGQXZP"></script><script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-J20GDGQXZP');
+</script></head>
+<!-- Google tag (gtag.js) -->
+
+
+
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-dark">
+        <div class="row py-2 px-lg-5">
+            <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center text-white">
+                    <small><i class="fa fa-phone-alt mr-2"></i>+92-333-5170474</small>
+                    <small class="px-3">|</small>
+                    <small><i class="fa fa-envelope mr-2"></i>idhscourier@gmail.com</small>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-white px-2" target="_blank" href="https://web.facebook.com/people/IDHS-international-courier-services/100063862313331/">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="text-white px-2" target="_blank" href="https://www.instagram.com/idhscourier?igsh=MzZia3JpNHMyMjlw">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a class="text-white pl-2" target="_blank" href="https://www.youtube.com/@idhsinternationalcourier">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="index.html" class="navbar-brand ml-lg-3">
+                <img src="img/logo.png" style="width: 270px;">
+                <!--  <img src="img/logo.png" style="width: 270px;"> -->
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav m-auto py-0">
+                    <a href="#" class="nav-item nav-link" id="homeLink">Home</a>
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var homeLink = document.getElementById('homeLink');
+                        if (homeLink) {
+                            homeLink.addEventListener('click', function(e) {
+                                e.preventDefault();
+                            });
+                        }
+                    });
+                    </script>
+                    <a href="tracking.html" class="nav-item nav-link">Tracking</a>
+                    <a href="about-us.html" class="nav-item nav-link">About</a>
+                    <a href="services.html" class="nav-item nav-link">Services</a>
+                    <a href="contact.html" class="nav-item nav-link">Contact</a>
+                                        <!-- <a href="price.html" class="nav-item nav-link">Price</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
+                        <div class="dropdown-menu rounded-0 m-0">
+                            <a href="blog.html" class="dropdown-item">Blog Grid</a>
+                            <a href="single.html" class="dropdown-item">Blog Detail</a>
+                        </div>
+                    </div> -->
+                </div>
+                <a href="contact.html#contact" class="btn btn-primary py-2 px-4 d-none d-lg-block">Get A Quote</a>
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+
+    
+
+
+    <!-- Header Start -->
+    <div class="jumbotron jumbotron-fluid mb-5">
+        <div class="container text-center py-4">
+            <h1 class="text-primary mb-4">International</h1>
+            <h2 class="text-white display-3 mb-5">Courier & Cargo Services</h2>
+            <div class="mx-auto" style="width: 100%; max-width: 600px;">
+                <form>
+                <div class="input-group">
+                    <input id="track" type="text" class="form-control border-light" required="" style="padding: 30px;" placeholder="Tracking Id">
+                    <div class="input-group-append">
+                        <button type="button" onclick="onTrack()" class="btn btn-primary px-3">Track & Trace</button>
+                    </div>
+                </div>
+                </form>
+            </div>
+            <h1 class="text-primary mt-5">Safe & Faster</h1>
+            <h2 class="text-white mb-4">Door To Door</h2>
+        </div>
+    </div>
+    <!-- Header End -->
+
+
+    <!-- About Start -->
+    <div class="container-fluid py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-5 pb-4 pb-lg-0">
+                    <img class="img-fluid w-100" src="img/about.jpg" alt="">
+                    <div class="bg-primary text-white text-center p-4">
+                        <h3 class="m-0 text-white">25+ Years Experience</h3>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <h6 class="text-primary text-uppercase font-weight-bold">About Us</h6>
+                    <h1 class="mb-4">Trusted & Faster Courier & Cargo Services Provider</h1>
+                    <div class="mb-4">
+                        <p>
+                        At IDHS, we are your reliable partner for fast and efficient courier and cargo services, both nationally
+                        and internationally. Whether you're sending documents, parcels, or large cargo, we offer affordable and tailored
+                        solutions to meet your shipping needs. Our commitment is to provide you with the fastest, most secure, and
+                        cost-effective delivery options to destinations across the globe.</p>
+                        <p>We serve a wide range of countries including the <mark>UK, USA, UAE, Canada, Oman, Thailand, Germany, Saudi Arabia, Australia,
+                        France, Spain, Europe</mark> and many more - ensuring that your shipments reach their destination quickly and safely, no matter where
+                        you are or where you're sending it.</p>
+                        
+                       <p>Our easy-to-use <a href="tracking"><strong>Online Tracking System</strong></a> keeps you updated every step of the way, giving you peace of mind and full
+                        transparency throughout the shipping process. By leveraging our strategic partnerships and global network, we are able
+                        to offer <strong>Discounted Rates</strong> that make shipping more affordable for individuals and businesses alike.</p>
+                        
+                        <p>At IDHS, we believe in making logistics seamless. Whether it's a small parcel, urgent document, or bulk
+                        cargo, we are here to deliver with care, reliability, and the best value in the industry. Trust us to handle your
+                        shipments with precision, speed, and professionalism, wherever you need to send them.</p>
+                        </div>
+                    <!-- <div class="d-flex align-items-center pt-2">
+                        <button type="button" class="btn-play" data-toggle="modal"
+                            data-src="https://www.youtube.com/embed/DWRcNpR6Kdc" data-target="#videoModal">
+                            <span></span>
+                        </button>
+                        <h5 class="font-weight-bold m-0 ml-4">Play Video</h5>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <!-- Video Modal -->
+        <div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">�</span>
+                        </button>        
+                        <!-- 16:9 aspect ratio -->
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <iframe class="embed-responsive-item" src="" id="video" allowscriptaccess="always" allow="autoplay"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- About End -->
+
+
+    <!--  Quote Request Start -->
+    <div class="container-fluid bg-secondary my-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7 py-5 py-lg-0">
+                    <h6 class="text-primary text-uppercase font-weight-bold">Get A Quote</h6>
+                    <h1 class="mb-4">Request A Free Quote</h1>
+                    <p class="mb-4">Getting a personalized quote for your shipment is just a few clicks away! Please fill out the form with your details –
+                    including your name, email, phone number, and a brief message describing your shipment needs. Our team will promptly
+                    provide you with a customized, no-obligation quote. Whether you're shipping a small package or managing larger cargo, we
+                    offer reliable and affordable solutions to meet your specific requirements. Request your free quote today, and let us
+                    help you get your goods where they need to go - hassle-free!</p>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h1 class="text-primary mb-2" data-toggle="counter-up">225</h1>
+                            <h6 class="font-weight-bold mb-4">SKilled Experts</h6>
+                        </div>
+                        <div class="col-sm-4">
+                            <h1 class="text-primary mb-2" data-toggle="counter-up">1050</h1>
+                            <h6 class="font-weight-bold mb-4">Happy Clients</h6>
+                        </div>
+                        <div class="col-sm-4">
+                            <h1 class="text-primary mb-2" data-toggle="counter-up">2500</h1>
+                            <h6 class="font-weight-bold mb-4">Complete Projects</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="bg-primary py-5 px-4 px-sm-5" style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('img/header.jpg');">
+                        <form class="py-5" name="sentMessage" id="contactForm" novalidate="novalidate">
+                            <div id="success"></div>
+                            <div class="form-group">
+                                <input id="name" type="text" class="form-control border-0 p-4" placeholder="Your Name" required="required" data-validation-required-message="Please enter your name">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                            <div class="form-group">
+                                <input id="email" type="email" class="form-control border-0 p-4" placeholder="Your Email" required="required" data-validation-required-message="Please enter your email">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                            <div class="form-group">
+                                <input id="phone" type="phone" class="form-control border-0 p-4" placeholder="Your Phone" required="required" data-validation-required-message="Please enter your phone">
+                                    <p class="help-block text-danger"></p>
+                            </div>
+                            <div class="form-group">
+                                <input id="message" type="text" class="form-control border-0 p-4" placeholder="Your Message" required="required" data-validation-required-message="Please enter your message">
+                                    <p class="help-block text-danger"></p>
+                            </div>
+                                     <div id="loading" class="textAlignCenter">
+                                <img style="width: 50px; height: 50px;" src="img/view-loader.gif">
+                            </div>
+                            <div>
+                                <button class="btn btn-dark btn-block border-0 py-3" type="submit" id="btnContact">Get A Quote</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Quote Request Start -->
+
+
+    <!-- Services Start -->
+    <div class="container-fluid pt-5">
+        <div class="container">
+            <div class="text-center pb-2">
+                <h6 class="text-primary text-uppercase font-weight-bold">Our Services</h6>
+                <h1 class="mb-4">Best Courier & Cargo Services</h1>
+            </div>
+            <div class="row pb-3">
+                <div class="col-lg-3 col-md-6 text-center mb-5">
+                    <div class="d-flex align-items-center justify-content-center bg-primary mb-4 p-4">
+                        <i class="fa fa-2x fa-plane text-white pr-3"></i>
+                        <h6 class="text-white font-weight-medium m-0">Air Freight</h6>
+                    </div>
+                    <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet diam sea est diam</p>
+                    <a class="border-bottom text-decoration-none" href="">Read More</a>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center mb-5">
+                    <div class="d-flex align-items-center justify-content-center bg-primary mb-4 p-4">
+                        <i class="fa fa-2x fa-ship text-white pr-3"></i>
+                        <h6 class="text-white font-weight-medium m-0">Ocean Freight</h6>
+                    </div>
+                    <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet diam sea est diam</p>
+                    <a class="border-bottom text-decoration-none" href="">Read More</a>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center mb-5">
+                    <div class="d-flex align-items-center justify-content-center bg-primary mb-4 p-4">
+                        <i class="fa fa-2x fa-truck text-white pr-3"></i>
+                        <h6 class="text-white font-weight-medium m-0">Land Transport</h6>
+                    </div>
+                    <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet diam sea est diam</p>
+                    <a class="border-bottom text-decoration-none" href="">Read More</a>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center mb-5">
+                    <div class="d-flex align-items-center justify-content-center bg-primary mb-4 p-4">
+                        <i class="fa fa-2x fa-store text-white pr-3"></i>
+                        <h6 class="text-white font-weight-medium m-0">Cargo Storage</h6>
+                    </div>
+                    <p>Diam amet eos at no eos sit lorem, amet rebum ipsum clita stet diam sea est diam</p>
+                    <a class="border-bottom text-decoration-none" href="">Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Services End -->
+
+
+    <!-- Features Start -->
+    <div class="container-fluid bg-secondary my-5">
+        <div class="container">
+            <div class="row align-items-center py-5">
+                <div class="col-lg-5">
+                    <img class="img-fluid w-100" src="img/feature.jpg" alt="">
+                </div>
+                <div class="col-lg-7 py-5 py-lg-0">
+                    <h6 class="text-primary text-uppercase font-weight-bold">Why Choose Us</h6>
+                    <h1 class="mb-4">Faster, Safe and Trusted Courier & Cargo Services</h1>
+                    <p class="mb-4">When it comes to shipping your parcels and cargo, we understand that you need a service that is fast, reliable, and
+                    cost-effective. Here's why IDHS is the best choice for all your courier and cargo needs:</p>
+                    <ul class="list-inline">
+                        <li>
+                            <h6><i class="far fa-dot-circle text-primary mr-3"></i>Global Reach with Local Expertise</h6>
+                        </li>
+                        <li>
+                            <h6><i class="far fa-dot-circle text-primary mr-3"></i>Fast & Reliable Delivery</h6>
+                        </li>
+                        <li>
+                            <h6><i class="far fa-dot-circle text-primary mr-3"></i>Discounted Rates for Every Shipment</h6>
+                        </li>
+                        <li>
+                            <h6><i class="far fa-dot-circle text-primary mr-3"></i>Advanced Online Tracking</h6>
+                        </li>
+                        <li>
+                            <h6><i class="far fa-dot-circle text-primary mr-3"></i>Exceptional Customer Support</h6>
+                        </li>
+                        <li>
+                            <h6><i class="far fa-dot-circle text-primary mr-3"></i>Secure & Safe Handling</h6>
+                        </li>
+                        <li>
+                            <h6><i class="far fa-dot-circle text-primary mr-3"></i>Flexible Solutions for Every Need</h6>
+                        </li>
+                        <li><h6><i class="far fa-dot-circle text-primary mr-3"></i>Best In Industry</h6></li>
+                        <li><h6><i class="far fa-dot-circle text-primary mr-3"></i>Emergency Services</h6></li>
+                        <li><h6><i class="far fa-dot-circle text-primary mr-3"></i>24/7 Customer Support</h6></li>
+                    </ul>
+                    <a href="" class="btn btn-primary mt-3 py-2 px-4">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Features End -->
+
+
+    <!-- Pricing Plan Start -->
+    <!-- <div class="container-fluid pt-5">
+        <div class="container">
+            <div class="text-center pb-2">
+                <h6 class="text-primary text-uppercase font-weight-bold">Pricing Plan</h6>
+                <h1 class="mb-4">Affordable Pricing Packages</h1>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-5">
+                    <div class="bg-secondary">
+                        <div class="text-center p-4">
+                            <h1 class="display-4 mb-0">
+                                <small class="align-top text-muted font-weight-medium" style="font-size: 22px; line-height: 45px;">$</small>49<small class="align-bottom text-muted font-weight-medium" style="font-size: 16px; line-height: 40px;">/Mo</small>
+                            </h1>
+                        </div>
+                        <div class="bg-primary text-center p-4">
+                            <h3 class="m-0">Basic</h3>
+                        </div>
+                        <div class="d-flex flex-column align-items-center py-4">
+                            <p>HTML5 & CSS3</p>
+                            <p>Bootstrap 4</p>
+                            <p>Responsive Layout</p>
+                            <p>Compatible With All Browsers</p>
+                            <a href="" class="btn btn-primary py-2 px-4 my-2">Order Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-5">
+                    <div class="bg-secondary">
+                        <div class="text-center p-4">
+                            <h1 class="display-4 mb-0">
+                                <small class="align-top text-muted font-weight-medium" style="font-size: 22px; line-height: 45px;">$</small>99<small class="align-bottom text-muted font-weight-medium" style="font-size: 16px; line-height: 40px;">/Mo</small>
+                            </h1>
+                        </div>
+                        <div class="bg-primary text-center p-4">
+                            <h3 class="m-0">Premium</h3>
+                        </div>
+                        <div class="d-flex flex-column align-items-center py-4">
+                            <p>HTML5 & CSS3</p>
+                            <p>Bootstrap 4</p>
+                            <p>Responsive Layout</p>
+                            <p>Compatible With All Browsers</p>
+                            <a href="" class="btn btn-primary py-2 px-4 my-2">Order Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-5">
+                    <div class="bg-secondary">
+                        <div class="text-center p-4">
+                            <h1 class="display-4 mb-0">
+                                <small class="align-top text-muted font-weight-medium" style="font-size: 22px; line-height: 45px;">$</small>149<small class="align-bottom text-muted font-weight-medium" style="font-size: 16px; line-height: 40px;">/Mo</small>
+                            </h1>
+                        </div>
+                        <div class="bg-primary text-center p-4">
+                            <h3 class="m-0">Business</h3>
+                        </div>
+                        <div class="d-flex flex-column align-items-center py-4">
+                            <p>HTML5 & CSS3</p>
+                            <p>Bootstrap 4</p>
+                            <p>Responsive Layout</p>
+                            <p>Compatible With All Browsers</p>
+                            <a href="" class="btn btn-primary py-2 px-4 my-2">Order Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <!-- Pricing Plan End -->
+
+
+    <!-- Team Start -->
+    <!-- <div class="container-fluid pt-5">
+        <div class="container">
+            <div class="text-center pb-2">
+                <h6 class="text-primary text-uppercase font-weight-bold">Delivery Team</h6>
+                <h1 class="mb-4">Meet Our Delivery Team</h1>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="team card position-relative overflow-hidden border-0 mb-5">
+                        <img class="card-img-top" src="img/team-1.jpg" alt="">
+                        <div class="card-body text-center p-0">
+                            <div class="team-text d-flex flex-column justify-content-center bg-secondary">
+                                <h5 class="font-weight-bold">Full Name</h5>
+                                <span>Designation</span>
+                            </div>
+                            <div class="team-social d-flex align-items-center justify-content-center bg-primary">
+                                <a class="btn btn-outline-dark btn-social mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                                <a class="btn btn-outline-dark btn-social mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-dark btn-social mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a class="btn btn-outline-dark btn-social" href="#"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="team card position-relative overflow-hidden border-0 mb-5">
+                        <img class="card-img-top" src="img/team-2.jpg" alt="">
+                        <div class="card-body text-center p-0">
+                            <div class="team-text d-flex flex-column justify-content-center bg-secondary">
+                                <h5 class="font-weight-bold">Full Name</h5>
+                                <span>Designation</span>
+                            </div>
+                            <div class="team-social d-flex align-items-center justify-content-center bg-primary">
+                                <a class="btn btn-outline-dark btn-social mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                                <a class="btn btn-outline-dark btn-social mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-dark btn-social mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a class="btn btn-outline-dark btn-social" href="#"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="team card position-relative overflow-hidden border-0 mb-5">
+                        <img class="card-img-top" src="img/team-3.jpg" alt="">
+                        <div class="card-body text-center p-0">
+                            <div class="team-text d-flex flex-column justify-content-center bg-secondary">
+                                <h5 class="font-weight-bold">Full Name</h5>
+                                <span>Designation</span>
+                            </div>
+                            <div class="team-social d-flex align-items-center justify-content-center bg-primary">
+                                <a class="btn btn-outline-dark btn-social mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                                <a class="btn btn-outline-dark btn-social mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-dark btn-social mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a class="btn btn-outline-dark btn-social" href="#"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="team card position-relative overflow-hidden border-0 mb-5">
+                        <img class="card-img-top" src="img/team-4.jpg" alt="">
+                        <div class="card-body text-center p-0">
+                            <div class="team-text d-flex flex-column justify-content-center bg-secondary">
+                                <h5 class="font-weight-bold">Full Name</h5>
+                                <span>Designation</span>
+                            </div>
+                            <div class="team-social d-flex align-items-center justify-content-center bg-primary">
+                                <a class="btn btn-outline-dark btn-social mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                                <a class="btn btn-outline-dark btn-social mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-dark btn-social mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a class="btn btn-outline-dark btn-social" href="#"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <!-- Team End -->
+
+    <!-- Blog Start -->
+    <!-- <div class="container-fluid pt-5">
+        <div class="container">
+            <div class="text-center pb-2">
+                <h6 class="text-primary text-uppercase font-weight-bold">Our Blog</h6>
+                <h1 class="mb-4">Latest From Blog</h1>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-5">
+                    <div class="position-relative">
+                        <img class="img-fluid w-100" src="img/blog-1.jpg" alt="">
+                        <div class="position-absolute bg-primary d-flex flex-column align-items-center justify-content-center rounded-circle"
+                            style="width: 60px; height: 60px; bottom: -30px; right: 30px;">
+                            <h4 class="font-weight-bold mb-n1">01</h4>
+                            <small class="text-white text-uppercase">Jan</small>
+                        </div>
+                    </div>
+                    <div class="bg-secondary" style="padding: 30px;">
+                        <div class="d-flex mb-3">
+                            <div class="d-flex align-items-center">
+                                <img class="rounded-circle" style="width: 40px; height: 40px;" src="img/user.jpg" alt="">
+                                <a class="text-muted ml-2" href="">John Doe</a>
+                            </div>
+                            <div class="d-flex align-items-center ml-4">
+                                <i class="far fa-bookmark text-primary"></i>
+                                <a class="text-muted ml-2" href="">Web Design</a>
+                            </div>
+                        </div>
+                        <h4 class="font-weight-bold mb-3">Kasd tempor diam sea justo dolor</h4>
+                        <p>Dolor sea ipsum ipsum et. Erat duo lorem magna vero dolor dolores. Rebum eirmod no dolor diam dolor amet ipsum. Lorem lorem sea sed diam est lorem magna</p>
+                        <a class="border-bottom border-primary text-uppercase text-decoration-none" href="">Read More <i class="fa fa-angle-right"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-5">
+                    <div class="position-relative">
+                        <img class="img-fluid w-100" src="img/blog-2.jpg" alt="">
+                        <div class="position-absolute bg-primary d-flex flex-column align-items-center justify-content-center rounded-circle"
+                            style="width: 60px; height: 60px; bottom: -30px; right: 30px;">
+                            <h4 class="font-weight-bold mb-n1">01</h4>
+                            <small class="text-white text-uppercase">Jan</small>
+                        </div>
+                    </div>
+                    <div class="bg-secondary" style="padding: 30px;">
+                        <div class="d-flex mb-3">
+                            <div class="d-flex align-items-center">
+                                <img class="rounded-circle" style="width: 40px; height: 40px;" src="img/user.jpg" alt="">
+                                <a class="text-muted ml-2" href="">John Doe</a>
+                            </div>
+                            <div class="d-flex align-items-center ml-4">
+                                <i class="far fa-bookmark text-primary"></i>
+                                <a class="text-muted ml-2" href="">Web Design</a>
+                            </div>
+                        </div>
+                        <h4 class="font-weight-bold mb-3">Kasd tempor diam sea justo dolor</h4>
+                        <p>Dolor sea ipsum ipsum et. Erat duo lorem magna vero dolor dolores. Rebum eirmod no dolor diam dolor amet ipsum. Lorem lorem sea sed diam est lorem magna</p>
+                        <a class="border-bottom border-primary text-uppercase text-decoration-none" href="">Read More <i class="fa fa-angle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <!-- Blog End -->
+
+    <script>
+        let track = document.getElementById("track");
+        function onTrack()
+        {
+            if (!track.value)
+            {
+                track.setCustomValidity('This field is required!');
+                track.reportValidity();
+            }
+            else
+            {
+
+                const link = document.createElement('a');
+                link.href = `https://idhs.com.pk/tracking?id=${track.value}`;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+            console.log(track.value);
+        }
+
+        track.addEventListener('input', function ()
+            {
+                if (track.value)
+                {
+                    track.setCustomValidity('');
+                    track.reportValidity();
+                }
+            });
+    </script>
+
+
+    <!-- Testimonial Start -->
+    <div class="container-fluid py-5">
+        <div class="container">
+            <div class="text-center pb-2">
+                <h6 class="text-primary text-uppercase font-weight-bold">Testimonial</h6>
+                <h1 class="mb-4">Our Clients Say</h1>
+            </div>
+            <div class="owl-carousel testimonial-carousel">
+                <div class="position-relative bg-secondary p-4">
+                    <i class="fa fa-3x fa-quote-right text-primary position-absolute" style="top: -6px; right: 0;"></i>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="img-fluid rounded-circle d-flex justify-content-center align-items-center" style="width: 50px; height: 50px; background-color: #c0c0c0;">
+                            <i class="fa fa-2x fa-user"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h6 class="font-weight-semi-bold m-0">Nadia Parveen</h6>
+                            <small>Client</small>
+                        </div>
+                    </div>
+                    <p class="m-0">Best service very cooperative staff over there.very reliable.if u need fast delivery
+                        service then you need to choose IDHS courier service</p>
+                </div>
+                <div class="position-relative bg-secondary p-4">
+                    <i class="fa fa-3x fa-quote-right text-primary position-absolute" style="top: -6px; right: 0;"></i>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="img-fluid rounded-circle d-flex justify-content-center align-items-center" style="width: 50px; height: 50px; background-color: #c0c0c0;">
+                            <i class="fa fa-2x fa-user"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h6 class="font-weight-semi-bold m-0">Seemab</h6>
+                            <small>Client</small>
+                        </div>
+                    </div>
+                    <p class="m-0">I am writing to express my sincere appreciation for the exceptional service provided by
+                        your courier company. Throughout my recent experience, from booking to delivery, your team
+                        demonstrated unparalleled efficiency and reliability. The booking process was seamless, and I was
+                        particularly impressed by the promptness of the delivery.</p>
+                </div>
+                <div class="position-relative bg-secondary p-4">
+                    <i class="fa fa-3x fa-quote-right text-primary position-absolute" style="top: -6px; right: 0;"></i>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="img-fluid rounded-circle d-flex justify-content-center align-items-center" style="width: 50px; height: 50px; background-color: #c0c0c0;">
+                            <i class="fa fa-2x fa-user"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h6 class="font-weight-semi-bold m-0">Orignal Brands for Kids</h6>
+                            <small>Client</small>
+                        </div>
+                    </div>
+                    <p class="m-0">Recived parcel before the day they mentioned..
+                        It was my first experiance and I m 💯 % satisfied with their servies . Rates are good than other
+                        services.. Abir bhai is very cooperative person. Highly recommended IDHS service.</p>
+                </div>
+                <div class="position-relative bg-secondary p-4">
+                    <i class="fa fa-3x fa-quote-right text-primary position-absolute" style="top: -6px; right: 0;"></i>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="img-fluid rounded-circle d-flex justify-content-center align-items-center" style="width: 50px; height: 50px; background-color: #c0c0c0;">
+                            <i class="fa fa-2x fa-user"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h6 class="font-weight-semi-bold m-0">Laraib Salaar</h6>
+                            <small>Client</small>
+                        </div>
+                    </div>
+                    <p class="m-0">It was a wonderful experience while using IDHS courier service.Fast service with low
+                        prices.I recieved my order timely and the parcel was also safe.
+                        If you need fast delivery services then you also need to choose IDHS courier service.</p>
+                </div>
+                <div class="position-relative bg-secondary p-4">
+                    <i class="fa fa-3x fa-quote-right text-primary position-absolute" style="top: -6px; right: 0;"></i>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="img-fluid rounded-circle d-flex justify-content-center align-items-center" style="width: 50px; height: 50px; background-color: #c0c0c0;">
+                            <i class="fa fa-2x fa-user"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h6 class="font-weight-semi-bold m-0">Ahmed Hassan</h6>
+                            <small>Client</small>
+                        </div>
+                    </div>
+                    <p class="m-0">IDHS has been my go-to courier service for all international shipments. Their rates are competitive, tracking is accurate, and customer service is always helpful. Highly recommend!</p>
+                </div>
+                <div class="position-relative bg-secondary p-4">
+                    <i class="fa fa-3x fa-quote-right text-primary position-absolute" style="top: -6px; right: 0;"></i>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="img-fluid rounded-circle d-flex justify-content-center align-items-center" style="width: 50px; height: 50px; background-color: #c0c0c0;">
+                            <i class="fa fa-2x fa-user"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h6 class="font-weight-semi-bold m-0">Sara Khan</h6>
+                            <small>Client</small>
+                        </div>
+                    </div>
+                    <p class="m-0">Excellent service! My parcel arrived on time and in perfect condition. The staff was professional and kept me updated throughout the delivery process. Will definitely use IDHS again.</p>
+                </div>
+                <div class="position-relative bg-secondary p-4">
+                    <i class="fa fa-3x fa-quote-right text-primary position-absolute" style="top: -6px; right: 0;"></i>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="img-fluid rounded-circle d-flex justify-content-center align-items-center" style="width: 50px; height: 50px; background-color: #c0c0c0;">
+                            <i class="fa fa-2x fa-user"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h6 class="font-weight-semi-bold m-0">Muhammad Ali</h6>
+                            <small>Business Owner</small>
+                        </div>
+                    </div>
+                    <p class="m-0">As a business owner, I rely on IDHS for all my cargo needs. They handle large shipments efficiently and their door-to-door service is unmatched. Great value for money!</p>
+                </div>
+                <div class="position-relative bg-secondary p-4">
+                    <i class="fa fa-3x fa-quote-right text-primary position-absolute" style="top: -6px; right: 0;"></i>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="img-fluid rounded-circle d-flex justify-content-center align-items-center" style="width: 50px; height: 50px; background-color: #c0c0c0;">
+                            <i class="fa fa-2x fa-user"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h6 class="font-weight-semi-bold m-0">Fatima Tariq</h6>
+                            <small>Client</small>
+                        </div>
+                    </div>
+                    <p class="m-0">Very impressed with IDHS! Fast delivery, secure packaging, and affordable rates. The online tracking system is easy to use and provides real-time updates. Highly satisfied!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Testimonial End -->
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-white mt-5 py-5 px-sm-3 px-md-5">
+        <div class="row pt-5">
+            <div class="col-lg-7 col-md-6">
+                <div class="row">
+                    <div class="col-md-6 mb-5">
+                        <h3 class="text-primary mb-4">Get In Touch</h3>
+                        <p><i class="fa fa-map-marker-alt mr-2"></i>B 18 AL BILAL PLAZA Chandni Chowk Flyover Satellite Town, Rawalpindi Pakistan</p>
+                        <p><i class="fa fa-mobile mr-2"></i>+92-333-5170474</p>
+                        <p><i class="fa fa-phone-alt mr-2"></i>051-4851197, 051-4927026</p>
+                        <p><i class="fa fa-envelope mr-2"></i>idhscourier@gmail.com</p>
+                        <div class="d-flex justify-content-start mt-4">
+                            <!-- <a class="btn btn-outline-light btn-social mr-2" target="_blank" href="#"><i class="fab fa-twitter"></i></a> -->
+                            <a class="btn btn-outline-light btn-social mr-2" target="_blank" href="https://web.facebook.com/people/IDHS-international-courier-services/100063862313331/"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-outline-light btn-social mr-2" target="_blank" href="https://www.youtube.com/@idhsinternationalcourier"><i class="fab fa-youtube"></i></a>
+                            <a class="btn btn-outline-light btn-social" target="_blank" href="https://www.instagram.com/idhscourier?igsh=MzZia3JpNHMyMjlw"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-5">
+                        <h3 class="text-primary mb-4">Quick Links</h3>
+                        <div class="d-flex flex-column justify-content-start">
+                            <a class="text-white mb-2" href="index.php"><i class="fa fa-angle-right mr-2"></i>Home</a>
+                            <a class="text-white mb-2" href="about.php"><i class="fa fa-angle-right mr-2"></i>About Us</a>
+                            <a class="text-white mb-2" href="services.html"><i class="fa fa-angle-right mr-2"></i>Our Services</a>
+                            <a class="text-white" href="contact.html"><i class="fa fa-angle-right mr-2"></i>Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-6 mb-5">
+                <h3 class="text-primary mb-4">Newsletter</h3>
+                <!-- <p>Rebum labore lorem dolores kasd est, et ipsum amet et at kasd, ipsum sea tempor magna tempor. Accu kasd sed ea duo ipsum. Dolor duo eirmod sea justo no lorem est diam</p> -->
+                <div class="w-100">
+                    <div class="input-group">
+                        <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary px-4">Sign Up</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid bg-dark text-white border-top py-4 px-sm-3 px-md-5" style="border-color: #3E3E4E !important;">
+        <div class="row">
+            <div class="col-lg-6 text-center text-md-left mb-3 mb-md-0">
+                <p class="m-0 text-white">� <a href="#">IDHS</a>. All Rights Reserved. 
+				
+				<!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+				Designed by <a href="https://htmlcodex.com">HTML Codex</a>
+                </p>
+            </div>
+            <div class="col-lg-6 text-center text-md-right">
+                <ul class="nav d-inline-flex">
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">Privacy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">Terms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">FAQs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white py-0" href="#">Help</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/counterup/counterup.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Contact Javascript File -->
+    <script src="mail/jqBootstrapValidation.min.js"></script>
+    <!-- <script src="mail/contact.js"></script> -->
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+        <script>
+            $(document).ready(function ()
+            {
+                $("#btnContact").show();
+                $("#loading").hide();
+                $("#contactForm input").jqBootstrapValidation({
+                    preventSubmit: true,
+                    submitError: function ($form, event, errors)
+                    {
+
+                    },
+                    submitSuccess: function ($form, event)
+                    {
+                        event.preventDefault();
+                        var name = $("input#name").val();
+                        var email = $("input#email").val();
+                        var phone = $("input#phone").val();
+
+                                                                    var message = $("input#message").val();
+                                                                if (name == '' || name == null || email == '' || email == null || phone == '' || phone == null || message == '' || message == null)
+                        {
+                            $('#success').html("<div class='alert alert-danger'>");
+                            $('#success > .alert-danger').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>�")
+                                .append("</button>");
+                            $('#success > .alert-danger').append($("<strong>").text("Required fields are missing"));
+                            $('#success > .alert-danger').append('</div>');
+                            $('#contactForm').trigger("reset");
+                            $("#btnContact").show();
+                            $("#loading").hide();
+                            return;
+                        }
+
+                        $("#btnContact").hide();
+                        $("#loading").show();
+
+                        $.post(`https://idhs.com.pk/admin_idhs/apiinquiry/inquiry.php?name=${name}&email=${email}&phone=${phone}&message=${message}`, function (response)
+                        {
+                            $("#btnContact").show();
+                            $("#loading").hide();
+                            if (!response.succeeded)
+                            {
+                                $('#success').html("<div class='alert alert-danger'>");
+                                $('#success > .alert-danger').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>�")
+                                    .append("</button>");
+                                $('#success > .alert-danger').append($("<strong>").text("" + response.message + ""));
+                                $('#success > .alert-danger').append('</div>');
+                                $('#contactForm').trigger("reset");
+                                $("#btnContact").show();
+                                $("#loading").hide();
+                            }
+                            else
+                            {
+                                $('#success').html("<div class='alert alert-success'>");
+                                $('#success > .alert-success').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>�")
+                                    .append("</button>");
+                                $('#success > .alert-success')
+                                    .append("<strong>We have received your message. We will get back to you soon. </strong>");
+                                $('#success > .alert-success')
+                                    .append('</div>');
+                                $('#contactForm').trigger("reset");
+                                $("#btnContact").show();
+                                $("#loading").hide();
+                            }
+                        }, 'json');
+
+                    },
+                    filter: function ()
+                    {
+                        return $(this).is(":visible");
+                    },
+                });
+            });
+
+
+
+    </script>
+
+
+<script>'undefined'=== typeof _trfq || (window._trfq = []);'undefined'=== typeof _trfd && (window._trfd=[]),_trfd.push({'tccl.baseHost':'secureserver.net'},{'ap':'cpsh-oh'},{'server':'sxb1plzcpnl506302'},{'dcenter':'sxb1'},{'cp_id':'10835299'},{'cp_cl':'8'}) // Monitoring performance to make your website faster. If you want to opt-out, please contact web hosting support.</script><script src="../slpCUi5sxNWq.com/signals/js/clients/scc-c2/sIxkQydi8A5H.js"></script></body></html>
