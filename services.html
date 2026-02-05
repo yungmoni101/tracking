@@ -146,7 +146,7 @@
                 </div>
                 <div class="col-lg-5">
                     <div class="bg-primary py-5 px-4 px-sm-5" style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('img/header.jpg');">
-                        <form class="py-5" name="sentMessage" id="contactForm" action="https://formspree.io/f/xqedzwwe" method="POST">
+                        <form class="py-5" name="sentMessage" id="contactForm" action="https://formspree.io/f/xqedzwwe" method="POST" target="hidden_iframe">
                             <input type="hidden" name="_subject" value="Quote Request - Services Page">
                             <div id="success"></div>
                             <div class="form-group">
@@ -280,8 +280,9 @@
             <div class="col-lg-5 col-md-6 mb-5">
                 <h3 class="text-primary mb-4">Newsletter</h3>
                 <div class="w-100">
-                    <form id="newsletterForm" action="https://formspree.io/f/xqedzwwe" method="POST">
+                    <form id="newsletterForm" action="https://formspree.io/f/xqedzwwe" method="POST" target="hidden_iframe">
                         <input type="hidden" name="_subject" value="Newsletter Subscription">
+                        <div id="newsletterSuccess"></div>
                         <div class="input-group">
                             <input type="email" name="email" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address" required>
                             <div class="input-group-append">
@@ -331,5 +332,23 @@
     <script src="mail/jqBootstrapValidation.min.js"></script>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+    <script>
+        // Quote form success message
+        $('#contactForm').on('submit', function() {
+            setTimeout(function() {
+                $('#success').html("<div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'>&times;</button><strong>Thank you! We received your quote request and will contact you soon.</strong></div>");
+                $('#contactForm')[0].reset();
+            }, 500);
+        });
+        
+        // Newsletter form success message
+        $('#newsletterForm').on('submit', function() {
+            setTimeout(function() {
+                $('#newsletterSuccess').html("<div class='alert alert-success mt-2'><button type='button' class='close' data-dismiss='alert'>&times;</button><strong>Thank you for subscribing to our newsletter!</strong></div>");
+                $('#newsletterForm')[0].reset();
+            }, 500);
+        });
+    </script>
 </body>
 </html>
