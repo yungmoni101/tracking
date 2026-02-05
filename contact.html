@@ -87,26 +87,23 @@
                     <h6 class="text-primary text-uppercase font-weight-bold">CONTACT US</h6>
                     <h1 class="mb-4">Contact For Any Queries</h1>
                     <div class="contact-form bg-secondary" style="padding: 30px;">
-                        <form name="sentMessage" id="contactForm" novalidate="novalidate">
+                        <form name="sentMessage" id="contactForm" action="https://formspree.io/f/xqedzwwe" method="POST">
                             <div id="success"></div>
                             <div class="form-group">
-                                <input id="name" type="text" class="form-control border-0 p-4" placeholder="Your Name" required="required" data-validation-required-message="Please enter your name">
+                                <input name="name" id="name" type="text" class="form-control border-0 p-4" placeholder="Your Name" required="required">
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="form-group">
-                                <input id="email" type="email" class="form-control border-0 p-4" placeholder="Your Email" required="required" data-validation-required-message="Please enter your email">
+                                <input name="email" id="email" type="email" class="form-control border-0 p-4" placeholder="Your Email" required="required">
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="form-group">
-                                <input id="phone" type="text" class="form-control border-0 p-4" placeholder="Phone" required="required" data-validation-required-message="Please enter your phone">
+                                <input name="phone" id="phone" type="text" class="form-control border-0 p-4" placeholder="Phone" required="required">
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="form-group">
-                                <textarea id="message" class="form-control border-0 p-4" rows="5" placeholder="Message" required="required" data-validation-required-message="Please enter your message"></textarea>
+                                <textarea name="message" id="message" class="form-control border-0 p-4" rows="5" placeholder="Message" required="required"></textarea>
                                 <p class="help-block text-danger"></p>
-                            </div>
-                            <div id="loading" class="textAlignCenter" style="display: none;">
-                                <img style="width: 50px; height: 50px;" src="img/view-loader.gif">
                             </div>
                             <div>
                                 <button class="btn btn-primary py-3 px-4" type="submit" id="btnContact">Send Message</button>
@@ -150,12 +147,16 @@
             <div class="col-lg-5 col-md-6 mb-5">
                 <h3 class="text-primary mb-4">Newsletter</h3>
                 <div class="w-100">
-                    <div class="input-group">
-                        <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary px-4">Sign Up</button>
+                    <form id="newsletterForm" action="https://formspree.io/f/xqedzwwe" method="POST">
+                        <input type="hidden" name="_subject" value="Newsletter Subscription">
+                        <div id="newsletterSuccess"></div>
+                        <div class="input-group">
+                            <input type="email" name="email" id="newsletterEmail" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address" required>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary px-4" id="btnNewsletter">Sign Up</button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -198,78 +199,5 @@
     <script src="mail/jqBootstrapValidation.min.js"></script>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
-    <script>
-        $(document).ready(function ()
-        {
-            $("#btnContact").show();
-            $("#loading").hide();
-            $("#contactForm input, #contactForm textarea").jqBootstrapValidation({
-                preventSubmit: true,
-                submitError: function ($form, event, errors)
-                {
-
-                },
-                submitSuccess: function ($form, event)
-                {
-                    event.preventDefault();
-                    var name = $("input#name").val();
-                    var email = $("input#email").val();
-                    var phone = $("input#phone").val();
-                    var message = $("textarea#message").val();
-                    
-                    if (name == '' || name == null || email == '' || email == null || phone == '' || phone == null || message == '' || message == null)
-                    {
-                        $('#success').html("<div class='alert alert-danger'>");
-                        $('#success > .alert-danger').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
-                            .append("</button>");
-                        $('#success > .alert-danger').append($("<strong>").text("Required fields are missing"));
-                        $('#success > .alert-danger').append('</div>');
-                        $('#contactForm').trigger("reset");
-                        $("#btnContact").show();
-                        $("#loading").hide();
-                        return;
-                    }
-
-                    $("#btnContact").hide();
-                    $("#loading").show();
-
-                    $.post(`https://aerotrack.com.pk/admin_aerotrack/apiinquiry/inquiry.php?name=${name}&email=${email}&phone=${phone}&message=${message}`, function (response)
-                    {
-                        $("#btnContact").show();
-                        $("#loading").hide();
-                        if (!response.succeeded)
-                        {
-                            $('#success').html("<div class='alert alert-danger'>");
-                            $('#success > .alert-danger').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
-                                .append("</button>");
-                            $('#success > .alert-danger').append($("<strong>").text("" + response.message + ""));
-                            $('#success > .alert-danger').append('</div>');
-                            $('#contactForm').trigger("reset");
-                            $("#btnContact").show();
-                            $("#loading").hide();
-                        }
-                        else
-                        {
-                            $('#success').html("<div class='alert alert-success'>");
-                            $('#success > .alert-success').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
-                                .append("</button>");
-                            $('#success > .alert-success')
-                                .append("<strong>We have received your message. We will get back to you soon. </strong>");
-                            $('#success > .alert-success')
-                                .append('</div>');
-                            $('#contactForm').trigger("reset");
-                            $("#btnContact").show();
-                            $("#loading").hide();
-                        }
-                    }, 'json');
-
-                },
-                filter: function ()
-                {
-                    return $(this).is(":visible");
-                },
-            });
-        });
-    </script>
 </body>
 </html>

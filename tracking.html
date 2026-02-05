@@ -690,12 +690,15 @@
             <div class="col-lg-5 col-md-6 mb-5">
                 <h3 class="text-primary mb-4">Newsletter</h3>
                 <div class="w-100">
-                    <div class="input-group">
-                        <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary px-4">Sign Up</button>
+                    <form id="newsletterForm" action="https://formspree.io/f/xqedzwwe" method="POST">
+                        <input type="hidden" name="_subject" value="Newsletter Subscription">
+                        <div class="input-group">
+                            <input type="email" name="email" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address" required>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary px-4">Sign Up</button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
