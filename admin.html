@@ -402,6 +402,81 @@
         </div>
     </div>
 
+    <!-- Add/Edit Shipment Detail Modal -->
+    <div id="customDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="customDetailModalTitle">Add Shipment Detail</h2>
+                <span class="modal-close" onclick="closeCustomDetailModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="customDetailForm">
+                    <div class="form-group">
+                        <label>Detail Title *</label>
+                        <input type="text" id="customDetailTitle" required placeholder="e.g., Weight, Dimensions, Contents">
+                    </div>
+                    <div class="form-group">
+                        <label>Detail Information *</label>
+                        <input type="text" id="customDetailInfo" required placeholder="e.g., 5.2 lbs">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCustomDetailModal()">Cancel</button>
+                <button class="btn" onclick="saveCustomDetail()">Save Detail</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POD Customer Name Modal -->
+    <div id="podCustomerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Set Customer Name for Proof of Delivery</h2>
+                <span class="modal-close" onclick="closePODCustomerModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="podCustomerForm">
+                    <div class="form-group">
+                        <label>Customer Name *</label>
+                        <input type="text" id="podCustomerName" required placeholder="e.g., John Smith">
+                        <small style="display: block; margin-top: 5px; color: #666;">This will show as "Dear [Customer Name]" in the proof of delivery.</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closePODCustomerModal()">Cancel</button>
+                <button class="btn" onclick="savePODCustomer()">Save Name</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit POD Detail Modal -->
+    <div id="podDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="podDetailModalTitle">Add POD Detail</h2>
+                <span class="modal-close" onclick="closePODDetailModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="podDetailForm">
+                    <div class="form-group">
+                        <label>Detail Title *</label>
+                        <input type="text" id="podDetailTitle" required placeholder="e.g., Delivered On, Received By, Service">
+                    </div>
+                    <div class="form-group">
+                        <label>Detail Information *</label>
+                        <input type="text" id="podDetailInfo" required placeholder="e.g., 11/05/2025 3:23 PM">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closePODDetailModal()">Cancel</button>
+                <button class="btn" onclick="savePODDetail()">Save Detail</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
@@ -540,7 +615,29 @@
 
                 if (trackingError) throw trackingError;
 
-                // Load events
+                // Load shipment details (max 2)
+                const { data: customDetails, error: customError } = await supabaseClient
+                    .from('custom_details')
+                    .select('*')
+                    .eq('tracking_id', trackingId)
+                    .order('sort_order', { ascending: true })
+                    .limit(2);
+
+                // Load proof of delivery info
+                const { data: podInfo, error: podError } = await supabaseClient
+                    .from('proof_of_delivery')
+                    .select('*')
+                    .eq('tracking_id', trackingId)
+                    .maybeSingle();
+
+                // Load POD details (unlimited)
+                const { data: podDetails, error: podDetailsError } = await supabaseClient
+                    .from('pod_details')
+                    .select('*')
+                    .eq('tracking_id', trackingId)
+                    .order('sort_order', { ascending: true });
+
+                // Load events (unlimited)
                 const { data: events, error: eventsError } = await supabaseClient
                     .from('tracking_events')
                     .select('*')
@@ -549,7 +646,7 @@
 
                 if (eventsError) throw eventsError;
 
-                displayTrackingDetails(tracking, events);
+                displayTrackingDetails(tracking, customDetails || [], podInfo, podDetails || [], events);
                 
                 // Update active state
                 document.querySelectorAll('.tracking-item').forEach(item => {
@@ -564,7 +661,7 @@
             }
         }
 
-        function displayTrackingDetails(tracking, events) {
+        function displayTrackingDetails(tracking, customDetails, podInfo, podDetails, events) {
             const mainContent = document.getElementById('mainContent');
             
             mainContent.innerHTML = `
@@ -575,6 +672,8 @@
                     </div>
                 </div>
 
+                <!-- BASIC TRACKING INFO -->
+                <h3 class="section-title">Basic Tracking Information</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
                         <label>Tracking Number</label>
@@ -606,8 +705,62 @@
                     ` : ''}
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 class="section-title" style="margin: 0; border: none; padding: 0;">Tracking Events</h3>
+                <!-- SHIPMENT DETAILS SECTION (Max 2 Details) -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 15px;">
+                    <h3 class="section-title" style="margin: 0; border: none; padding: 0;">Shipment Details</h3>
+                    ${customDetails && customDetails.length < 2 ? `<button class="btn btn-small" onclick="openCustomDetailModal()">+ Add Detail</button>` : ''}
+                </div>
+                ${customDetails && customDetails.length > 0 ? `
+                    <div class="detail-grid">
+                        ${customDetails.map(detail => `
+                            <div class="detail-item">
+                                <label>${detail.detail_title}</label>
+                                <div class="value">${detail.detail_info}</div>
+                                <div style="margin-top: 8px;">
+                                    <button class="btn btn-small btn-secondary" onclick="editCustomDetail('${detail.id}', '${detail.detail_title.replace(/'/g, "\\'")}', '${detail.detail_info.replace(/'/g, "\\'")}')">Edit</button>
+                                    <button class="btn btn-small btn-danger" onclick="deleteCustomDetail('${detail.id}')">Delete</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : '<p style="color: #999; text-align: center; padding: 20px;">No shipment details yet. You can add up to 2 custom details (e.g., Weight, Dimensions).</p>'}
+
+                <!-- PROOF OF DELIVERY SECTION -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 15px;">
+                    <h3 class="section-title" style="margin: 0; border: none; padding: 0;">Proof of Delivery</h3>
+                    <button class="btn btn-small" onclick="openPODCustomerModal()">${podInfo ? 'Edit Customer Name' : '+ Set Customer Name'}</button>
+                </div>
+                ${podInfo && podInfo.customer_name ? `
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                        <p style="margin: 0; color: #333;"><strong>Dear ${podInfo.customer_name},</strong></p>
+                        <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">This notice serves as proof of delivery for the shipment listed below.</p>
+                    </div>
+                ` : '<p style="color: #999; text-align: center; padding: 20px;">No customer name set. Click "Set Customer Name" to add.</p>'}
+                
+                ${podInfo && podInfo.customer_name ? `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4 style="margin: 0; font-size: 16px; color: #666;">Delivery Details</h4>
+                        <button class="btn btn-small" onclick="openPODDetailModal()">+ Add POD Detail</button>
+                    </div>
+                    ${podDetails && podDetails.length > 0 ? `
+                        <div class="detail-grid">
+                            ${podDetails.map(detail => `
+                                <div class="detail-item">
+                                    <label>${detail.detail_title}</label>
+                                    <div class="value">${detail.detail_info}</div>
+                                    <div style="margin-top: 8px;">
+                                        <button class="btn btn-small btn-secondary" onclick="editPODDetail('${detail.id}', '${detail.detail_title.replace(/'/g, "\\'")}', '${detail.detail_info.replace(/'/g, "\\'")}')">Edit</button>
+                                        <button class="btn btn-small btn-danger" onclick="deletePODDetail('${detail.id}')">Delete</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : '<p style="color: #999; text-align: center; padding: 20px;">No delivery details yet. Add details like "Delivered On", "Received By", etc.</p>'}
+                ` : ''}
+
+                <!-- TRACKING EVENTS/PROGRESS -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 15px;">
+                    <h3 class="section-title" style="margin: 0; border: none; padding: 0;">Shipment Progress</h3>
                     <button class="btn btn-small" onclick="openEventModal()">+ Add Event</button>
                 </div>
 
@@ -760,22 +913,15 @@
 
         // ==================== DELETE TRACKING ====================
         async function deleteTracking(trackingId) {
-            if (!confirm('Are you sure you want to delete this tracking number? This will also delete all associated events.')) return;
+            if (!confirm('Are you sure you want to delete this tracking number? This will also delete all associated data.')) return;
 
             try {
-                // First delete all events
-                await supabaseClient
-                    .from('tracking_events')
-                    .delete()
-                    .eq('tracking_id', trackingId);
-
-                // Then delete the tracking
-                const { error } = await supabaseClient
-                    .from('trackings')
-                    .delete()
-                    .eq('id', trackingId);
-
-                if (error) throw error;
+                // Delete all related data
+                await supabaseClient.from('tracking_events').delete().eq('tracking_id', trackingId);
+                await supabaseClient.from('custom_details').delete().eq('tracking_id', trackingId);
+                await supabaseClient.from('pod_details').delete().eq('tracking_id', trackingId);
+                await supabaseClient.from('proof_of_delivery').delete().eq('tracking_id', trackingId);
+                await supabaseClient.from('trackings').delete().eq('id', trackingId);
 
                 showAlert('Tracking number deleted successfully!');
                 currentTrackingId = null;
@@ -790,6 +936,290 @@
             } catch (error) {
                 console.error('Error deleting tracking:', error);
                 showAlert('Error deleting tracking: ' + error.message, 'error');
+            }
+        }
+
+        // ==================== SHIPMENT DETAILS (MAX 2) ====================
+        let currentCustomDetailId = null;
+
+        function openCustomDetailModal(detailId = null, title = '', info = '') {
+            currentCustomDetailId = detailId;
+            document.getElementById('customDetailModal').classList.add('active');
+            document.getElementById('customDetailModalTitle').textContent = detailId ? 'Edit Shipment Detail' : 'Add Shipment Detail';
+            
+            if (detailId) {
+                document.getElementById('customDetailTitle').value = title;
+                document.getElementById('customDetailInfo').value = info;
+            } else {
+                document.getElementById('customDetailForm').reset();
+            }
+        }
+
+        function closeCustomDetailModal() {
+            document.getElementById('customDetailModal').classList.remove('active');
+            currentCustomDetailId = null;
+        }
+
+        async function saveCustomDetail() {
+            const detailTitle = document.getElementById('customDetailTitle').value;
+            const detailInfo = document.getElementById('customDetailInfo').value;
+
+            if (!detailTitle || !detailInfo) {
+                showAlert('Please fill in both title and information', 'error');
+                return;
+            }
+
+            try {
+                if (currentCustomDetailId) {
+                    // Update existing
+                    const { error } = await supabaseClient
+                        .from('custom_details')
+                        .update({
+                            detail_title: detailTitle,
+                            detail_info: detailInfo
+                        })
+                        .eq('id', currentCustomDetailId);
+
+                    if (error) throw error;
+                    showAlert('Shipment detail updated successfully!');
+                } else {
+                    // Check if already have 2 details
+                    const { data: existingDetails } = await supabaseClient
+                        .from('custom_details')
+                        .select('id')
+                        .eq('tracking_id', currentTrackingId);
+
+                    if (existingDetails && existingDetails.length >= 2) {
+                        showAlert('Maximum 2 shipment details allowed. Please delete one first.', 'error');
+                        return;
+                    }
+
+                    // Create new
+                    const { data: maxOrder } = await supabaseClient
+                        .from('custom_details')
+                        .select('sort_order')
+                        .eq('tracking_id', currentTrackingId)
+                        .order('sort_order', { ascending: false })
+                        .limit(1);
+
+                    const nextOrder = maxOrder && maxOrder[0] ? maxOrder[0].sort_order + 1 : 1;
+
+                    const { error } = await supabaseClient
+                        .from('custom_details')
+                        .insert([{
+                            tracking_id: currentTrackingId,
+                            detail_title: detailTitle,
+                            detail_info: detailInfo,
+                            sort_order: nextOrder
+                        }]);
+
+                    if (error) throw error;
+                    showAlert('Shipment detail added successfully!');
+                }
+
+                closeCustomDetailModal();
+                loadTrackingDetails(currentTrackingId);
+            } catch (error) {
+                console.error('Error saving shipment detail:', error);
+                showAlert('Error saving detail: ' + error.message, 'error');
+            }
+        }
+
+        function editCustomDetail(detailId, title, info) {
+            currentCustomDetailId = detailId;
+            openCustomDetailModal(detailId, title, info);
+        }
+
+        async function deleteCustomDetail(detailId) {
+            if (!confirm('Are you sure you want to delete this shipment detail?')) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('custom_details')
+                    .delete()
+                    .eq('id', detailId);
+
+                if (error) throw error;
+
+                showAlert('Shipment detail deleted successfully!');
+                loadTrackingDetails(currentTrackingId);
+            } catch (error) {
+                console.error('Error deleting shipment detail:', error);
+                showAlert('Error deleting detail: ' + error.message, 'error');
+            }
+        }
+
+        // ==================== PROOF OF DELIVERY ====================
+        let currentPODDetailId = null;
+
+        async function openPODCustomerModal() {
+            document.getElementById('podCustomerModal').classList.add('active');
+            
+            // Load existing customer name if any
+            try {
+                const { data, error } = await supabaseClient
+                    .from('proof_of_delivery')
+                    .select('customer_name')
+                    .eq('tracking_id', currentTrackingId)
+                    .maybeSingle();
+
+                if (data) {
+                    document.getElementById('podCustomerName').value = data.customer_name || '';
+                } else {
+                    document.getElementById('podCustomerForm').reset();
+                }
+            } catch (error) {
+                console.error('Error loading customer name:', error);
+                document.getElementById('podCustomerForm').reset();
+            }
+        }
+
+        function closePODCustomerModal() {
+            document.getElementById('podCustomerModal').classList.remove('active');
+        }
+
+        async function savePODCustomer() {
+            const customerName = document.getElementById('podCustomerName').value;
+
+            if (!customerName) {
+                showAlert('Please enter a customer name', 'error');
+                return;
+            }
+
+            try {
+                // Check if POD record exists
+                const { data: existing } = await supabaseClient
+                    .from('proof_of_delivery')
+                    .select('id')
+                    .eq('tracking_id', currentTrackingId)
+                    .maybeSingle();
+
+                if (existing) {
+                    // Update existing
+                    const { error } = await supabaseClient
+                        .from('proof_of_delivery')
+                        .update({
+                            customer_name: customerName,
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('tracking_id', currentTrackingId);
+
+                    if (error) throw error;
+                    showAlert('Customer name updated successfully!');
+                } else {
+                    // Create new
+                    const { error } = await supabaseClient
+                        .from('proof_of_delivery')
+                        .insert([{
+                            tracking_id: currentTrackingId,
+                            customer_name: customerName
+                        }]);
+
+                    if (error) throw error;
+                    showAlert('Customer name set successfully!');
+                }
+
+                closePODCustomerModal();
+                loadTrackingDetails(currentTrackingId);
+            } catch (error) {
+                console.error('Error saving customer name:', error);
+                showAlert('Error saving name: ' + error.message, 'error');
+            }
+        }
+
+        function openPODDetailModal(detailId = null, title = '', info = '') {
+            currentPODDetailId = detailId;
+            document.getElementById('podDetailModal').classList.add('active');
+            document.getElementById('podDetailModalTitle').textContent = detailId ? 'Edit POD Detail' : 'Add POD Detail';
+            
+            if (detailId) {
+                document.getElementById('podDetailTitle').value = title;
+                document.getElementById('podDetailInfo').value = info;
+            } else {
+                document.getElementById('podDetailForm').reset();
+            }
+        }
+
+        function closePODDetailModal() {
+            document.getElementById('podDetailModal').classList.remove('active');
+            currentPODDetailId = null;
+        }
+
+        async function savePODDetail() {
+            const detailTitle = document.getElementById('podDetailTitle').value;
+            const detailInfo = document.getElementById('podDetailInfo').value;
+
+            if (!detailTitle || !detailInfo) {
+                showAlert('Please fill in both title and information', 'error');
+                return;
+            }
+
+            try {
+                if (currentPODDetailId) {
+                    // Update existing
+                    const { error } = await supabaseClient
+                        .from('pod_details')
+                        .update({
+                            detail_title: detailTitle,
+                            detail_info: detailInfo
+                        })
+                        .eq('id', currentPODDetailId);
+
+                    if (error) throw error;
+                    showAlert('POD detail updated successfully!');
+                } else {
+                    // Create new
+                    const { data: maxOrder } = await supabaseClient
+                        .from('pod_details')
+                        .select('sort_order')
+                        .eq('tracking_id', currentTrackingId)
+                        .order('sort_order', { ascending: false })
+                        .limit(1);
+
+                    const nextOrder = maxOrder && maxOrder[0] ? maxOrder[0].sort_order + 1 : 1;
+
+                    const { error } = await supabaseClient
+                        .from('pod_details')
+                        .insert([{
+                            tracking_id: currentTrackingId,
+                            detail_title: detailTitle,
+                            detail_info: detailInfo,
+                            sort_order: nextOrder
+                        }]);
+
+                    if (error) throw error;
+                    showAlert('POD detail added successfully!');
+                }
+
+                closePODDetailModal();
+                loadTrackingDetails(currentTrackingId);
+            } catch (error) {
+                console.error('Error saving POD detail:', error);
+                showAlert('Error saving detail: ' + error.message, 'error');
+            }
+        }
+
+        function editPODDetail(detailId, title, info) {
+            currentPODDetailId = detailId;
+            openPODDetailModal(detailId, title, info);
+        }
+
+        async function deletePODDetail(detailId) {
+            if (!confirm('Are you sure you want to delete this POD detail?')) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('pod_details')
+                    .delete()
+                    .eq('id', detailId);
+
+                if (error) throw error;
+
+                showAlert('POD detail deleted successfully!');
+                loadTrackingDetails(currentTrackingId);
+            } catch (error) {
+                console.error('Error deleting POD detail:', error);
+                showAlert('Error deleting detail: ' + error.message, 'error');
             }
         }
 
