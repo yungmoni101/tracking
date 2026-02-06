@@ -127,13 +127,13 @@
             top: 45px;
             bottom: 0;
             width: 2px;
-            background: #0066cc;
+            background: #00897b;
         }
         .timeline-icon {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: #0066cc;
+            background: #00897b;
             color: white;
             display: flex;
             align-items: center;
@@ -142,6 +142,11 @@
             font-size: 16px;
             z-index: 1;
             position: relative;
+        }
+        .timeline-icon.arrow {
+            background: white;
+            border: 2px solid #00897b;
+            color: #00897b;
         }
         .timeline-content {
             flex: 1;
@@ -901,10 +906,12 @@
             
             let timelineHTML = '';
             displayEvents.forEach((event, index) => {
-                const icon = getEventIcon(event.event_title);
+                const isLastItem = index === displayEvents.length - 1;
+                const icon = isLastItem ? 'arrow-right' : 'check';
+                const iconClass = isLastItem ? 'timeline-icon arrow' : 'timeline-icon';
                 timelineHTML += `
                     <div class="timeline-item">
-                        <div class="timeline-icon">
+                        <div class="${iconClass}">
                             <i class="fas fa-${icon}"></i>
                         </div>
                         <div class="timeline-content">
