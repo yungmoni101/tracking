@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroTrack Admin Panel</title>
+    <link rel="icon" type="image/png" href="img/logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+        }
+        .btn {
+            padding: 12px 24px;
+            background: #ffb500;
+            color: #333;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #e6a300;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+        }
+        .sidebar {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        .sidebar h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .tracking-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .tracking-item {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .tracking-item:hover {
+            background: #f8f9fa;
+            border-color: #ffb500;
+        }
+        .tracking-item.active {
+            background: #fff3cd;
+            border-color: #ffb500;
+        }
+        .tracking-item-number {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .tracking-item-date {
+            font-size: 12px;
+            color: #666;
+        }
+        .main-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+        .modal.active {
+            display: block;
+        }
+        .modal-content {
+            background: white;
+            margin: 30px auto;
+            padding: 0;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h2 {
+            font-size: 20px;
+            color: #333;
+        }
+        .modal-close {
+            font-size: 28px;
+            color: #999;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: #333;
+        }
+        .modal-body {
+            padding: 25px;
+        }
+        .modal-footer {
+            padding: 15px 25px;
+            border-top: 1px solid #e0e0e0;
+            text-align: right;
+        }
+        .event-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+        }
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+        .event-datetime {
+            font-weight: 600;
+            color: #333;
+        }
+        .event-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .event-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .event-location {
+            font-size: 13px;
+            color: #888;
+        }
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        .detail-item label {
+            font-size: 12px;
+            color: #666;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .detail-item .value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+        }
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 2px solid #ffb500;
+            padding-bottom: 10px;
+        }
+        .alert {
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🚚 AeroTrack Admin Panel</h1>
+            <button class="btn" onclick="openCreateModal()">+ Create Tracking Number</button>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alertContainer"></div>
+
+        <!-- Main Grid -->
+        <div class="grid">
+            <!-- Sidebar - Tracking List -->
+            <div class="sidebar">
+                <h2>All Tracking Numbers</h2>
+                <div class="tracking-list" id="trackingList">
+                    <div class="empty-state">
+                        <p>No tracking numbers yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content - Tracking Details -->
+            <div class="main-content" id="mainContent">
+                <div class="empty-state">
+                    <div style="font-size: 64px; margin-bottom: 20px;">📦</div>
+                    <h3>Select a tracking number</h3>
+                    <p>Click on a tracking number from the list to view and manage its details</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Tracking Modal -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Tracking Number</h2>
+                <span class="modal-close" onclick="closeCreateModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="createTrackingForm">
+                    <div class="form-group">
+                        <label>Tracking Number *</label>
+                        <input type="text" id="trackingNumber" required placeholder="e.g., 1Z2902E30419053424">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Shipped / Billed On *</label>
+                            <input type="text" id="shippedDate" required placeholder="e.g., 10/28/2025">
+                        </div>
+                        <div class="form-group">
+                            <label>Service *</label>
+                            <input type="text" id="service" required placeholder="e.g., UPS Express Saver®">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Shipment Category *</label>
+                            <input type="text" id="shipmentCategory" required placeholder="e.g., Package">
+                        </div>
+                        <div class="form-group">
+                            <label>Receiver Name</label>
+                            <input type="text" id="receiverName" placeholder="e.g., DONALD">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Delivery Location</label>
+                        <input type="text" id="deliveryLocation" placeholder="e.g., Mail Room">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCreateModal()">Cancel</button>
+                <button class="btn" onclick="createTracking()">Create Tracking</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="eventModalTitle">Add Tracking Event</h2>
+                <span class="modal-close" onclick="closeEventModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="eventForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Date *</label>
+                            <input type="text" id="eventDate" required placeholder="e.g., 11/05/2025">
+                        </div>
+                        <div class="form-group">
+                            <label>Time *</label>
+                            <input type="text" id="eventTime" required placeholder="e.g., 3:23 PM">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Event Title *</label>
+                        <input type="text" id="eventTitle" required placeholder="e.g., Delivered">
+                    </div>
+                    <div class="form-group">
+                        <label>Event Description</label>
+                        <textarea id="eventDescription" placeholder="e.g., DELIVERED"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="eventLocation" placeholder="e.g., MONTREAL, CA">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEventModal()">Cancel</button>
+                <button class="btn" onclick="saveEvent()">Save Event</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // ============ FILE LOADED AT: 2026-02-06 16:05:00 ============
+        console.log('🟢 ADMIN.HTML LOADED - VERSION: 2026-02-06-16-05-00');
+        console.log('🟢 Script starting - checking Supabase...');
+        
+        // Cache Buster: 2026-02-06-16-00-ULTIMATE-FIX
+        // ==================== SUPABASE CONFIGURATION ====================
+        // Replace these with your actual Supabase credentials
+        const SUPABASE_URL = 'https://phkdpxeamlynzunhiuso.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBoa2RweGVhbWx5bnp1bmhpdXNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0OTE1NDQsImV4cCI6MjA4NDA2NzU0NH0.ugPH6sqQ8pI9nP4T-qghFYaIq6AA9acGYsYfcA7MmOM';
+        
+        // Initialize Supabase client
+        let supabase;
+        if (!window.aerotrackSupabase) {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            window.aerotrackSupabase = supabase;
+        } else {
+            supabase = window.aerotrackSupabase;
+        }
+
+        // ==================== STATE ====================
+        let currentTrackingId = null;
+        let currentEventId = null;
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTrackings();
+        });
+
+        // ==================== ALERT FUNCTIONS ====================
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // ==================== LOAD TRACKINGS ====================
+        async function loadTrackings() {
+            try {
+                const { data, error } = await supabase
+                    .from('trackings')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                displayTrackingList(data);
+            } catch (error) {
+                console.error('Error loading trackings:', error);
+                showAlert('Error loading tracking numbers: ' + error.message, 'error');
+            }
+        }
+
+        function displayTrackingList(trackings) {
+            const listContainer = document.getElementById('trackingList');
+            
+            if (!trackings || trackings.length === 0) {
+                listContainer.innerHTML = '<div class="empty-state"><p>No tracking numbers yet</p></div>';
+                return;
+            }
+
+            listContainer.innerHTML = trackings.map(tracking => `
+                <div class="tracking-item" onclick="loadTrackingDetails('${tracking.id}')">
+                    <div class="tracking-item-number">${tracking.tracking_number}</div>
+                    <div class="tracking-item-date">Created: ${new Date(tracking.created_at).toLocaleDateString()}</div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== CREATE TRACKING ====================
+        function openCreateModal() {
+            document.getElementById('createModal').classList.add('active');
+            document.getElementById('createTrackingForm').reset();
+        }
+
+        function closeCreateModal() {
+            document.getElementById('createModal').classList.remove('active');
+        }
+
+        async function createTracking() {
+            const trackingNumber = document.getElementById('trackingNumber').value;
+            const shippedDate = document.getElementById('shippedDate').value;
+            const service = document.getElementById('service').value;
+            const shipmentCategory = document.getElementById('shipmentCategory').value;
+            const receiverName = document.getElementById('receiverName').value;
+            const deliveryLocation = document.getElementById('deliveryLocation').value;
+
+            if (!trackingNumber || !shippedDate || !service || !shipmentCategory) {
+                showAlert('Please fill in all required fields', 'error');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('trackings')
+                    .insert([{
+                        tracking_number: trackingNumber,
+                        shipped_date: shippedDate,
+                        service: service,
+                        shipment_category: shipmentCategory,
+                        receiver_name: receiverName,
+                        delivery_location: deliveryLocation
+                    }])
+                    .select();
+
+                if (error) throw error;
+
+                showAlert('Tracking number created successfully!');
+                closeCreateModal();
+                loadTrackings();
+                
+                if (data && data[0]) {
+                    loadTrackingDetails(data[0].id);
+                }
+            } catch (error) {
+                console.error('Error creating tracking:', error);
+                showAlert('Error creating tracking: ' + error.message, 'error');
+            }
+        }
+
+        // ==================== LOAD TRACKING DETAILS ====================
+        async function loadTrackingDetails(trackingId) {
+            currentTrackingId = trackingId;
+            
+            try {
+                // Load tracking info
+                const { data: tracking, error: trackingError } = await supabase
+                    .from('trackings')
+                    .select('*')
+                    .eq('id', trackingId)
+                    .single();
+
+                if (trackingError) throw trackingError;
+
+                // Load events
+                const { data: events, error: eventsError } = await supabase
+                    .from('tracking_events')
+                    .select('*')
+                    .eq('tracking_id', trackingId)
+                    .order('sort_order', { ascending: false });
+
+                if (eventsError) throw eventsError;
+
+                displayTrackingDetails(tracking, events);
+                
+                // Update active state
+                document.querySelectorAll('.tracking-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                event.target.closest('.tracking-item')?.classList.add('active');
+            } catch (error) {
+                console.error('Error loading tracking details:', error);
+                showAlert('Error loading details: ' + error.message, 'error');
+            }
+        }
+
+        function displayTrackingDetails(tracking, events) {
+            const mainContent = document.getElementById('mainContent');
+            
+            mainContent.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>${tracking.tracking_number}</h2>
+                    <div>
+                        <button class="btn btn-small btn-danger" onclick="deleteTracking('${tracking.id}')">Delete Tracking</button>
+                    </div>
+                </div>
+
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <label>Tracking Number</label>
+                        <div class="value">${tracking.tracking_number}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Shipped / Billed On</label>
+                        <div class="value">${tracking.shipped_date}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Service</label>
+                        <div class="value">${tracking.service}</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Shipment Category</label>
+                        <div class="value">${tracking.shipment_category}</div>
+                    </div>
+                    ${tracking.receiver_name ? `
+                    <div class="detail-item">
+                        <label>Receiver Name</label>
+                        <div class="value">${tracking.receiver_name}</div>
+                    </div>
+                    ` : ''}
+                    ${tracking.delivery_location ? `
+                    <div class="detail-item">
+                        <label>Delivery Location</label>
+                        <div class="value">${tracking.delivery_location}</div>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 class="section-title" style="margin: 0; border: none; padding: 0;">Tracking Events</h3>
+                    <button class="btn btn-small" onclick="openEventModal()">+ Add Event</button>
+                </div>
+
+                <div id="eventsContainer">
+                    ${events && events.length > 0 ? events.map((event, index) => `
+                        <div class="event-card">
+                            <div class="event-header">
+                                <div>
+                                    <div class="event-datetime">${event.event_date} ${event.event_time}</div>
+                                    <div class="event-title">${event.event_title}</div>
+                                    ${event.event_description ? `<div class="event-description">${event.event_description}</div>` : ''}
+                                    ${event.event_location ? `<div class="event-location">📍 ${event.event_location}</div>` : ''}
+                                </div>
+                                <div>
+                                    <button class="btn btn-small btn-secondary" onclick="editEvent('${event.id}')">Edit</button>
+                                    <button class="btn btn-small btn-danger" onclick="deleteEvent('${event.id}')">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('') : '<p style="color: #999; text-align: center; padding: 20px;">No tracking events yet. Add your first event!</p>'}
+                </div>
+            `;
+        }
+
+        // ==================== EVENT MODAL ====================
+        function openEventModal(eventId = null) {
+            currentEventId = eventId;
+            document.getElementById('eventModal').classList.add('active');
+            document.getElementById('eventModalTitle').textContent = eventId ? 'Edit Tracking Event' : 'Add Tracking Event';
+            
+            if (eventId) {
+                loadEventData(eventId);
+            } else {
+                document.getElementById('eventForm').reset();
+            }
+        }
+
+        function closeEventModal() {
+            document.getElementById('eventModal').classList.remove('active');
+            currentEventId = null;
+        }
+
+        async function loadEventData(eventId) {
+            try {
+                const { data, error } = await supabase
+                    .from('tracking_events')
+                    .select('*')
+                    .eq('id', eventId)
+                    .single();
+
+                if (error) throw error;
+
+                document.getElementById('eventDate').value = data.event_date;
+                document.getElementById('eventTime').value = data.event_time;
+                document.getElementById('eventTitle').value = data.event_title;
+                document.getElementById('eventDescription').value = data.event_description || '';
+                document.getElementById('eventLocation').value = data.event_location || '';
+            } catch (error) {
+                console.error('Error loading event:', error);
+                showAlert('Error loading event: ' + error.message, 'error');
+            }
+        }
+
+        async function saveEvent() {
+            const eventDate = document.getElementById('eventDate').value;
+            const eventTime = document.getElementById('eventTime').value;
+            const eventTitle = document.getElementById('eventTitle').value;
+            const eventDescription = document.getElementById('eventDescription').value;
+            const eventLocation = document.getElementById('eventLocation').value;
+
+            if (!eventDate || !eventTime || !eventTitle) {
+                showAlert('Please fill in all required fields', 'error');
+                return;
+            }
+
+            try {
+                if (currentEventId) {
+                    // Update existing event
+                    const { error } = await supabase
+                        .from('tracking_events')
+                        .update({
+                            event_date: eventDate,
+                            event_time: eventTime,
+                            event_title: eventTitle,
+                            event_description: eventDescription,
+                            event_location: eventLocation
+                        })
+                        .eq('id', currentEventId);
+
+                    if (error) throw error;
+                    showAlert('Event updated successfully!');
+                } else {
+                    // Create new event
+                    // Get the current max sort_order
+                    const { data: maxOrder } = await supabase
+                        .from('tracking_events')
+                        .select('sort_order')
+                        .eq('tracking_id', currentTrackingId)
+                        .order('sort_order', { ascending: false })
+                        .limit(1);
+
+                    const nextOrder = maxOrder && maxOrder[0] ? maxOrder[0].sort_order + 1 : 1;
+
+                    const { error } = await supabase
+                        .from('tracking_events')
+                        .insert([{
+                            tracking_id: currentTrackingId,
+                            event_date: eventDate,
+                            event_time: eventTime,
+                            event_title: eventTitle,
+                            event_description: eventDescription,
+                            event_location: eventLocation,
+                            sort_order: nextOrder
+                        }]);
+
+                    if (error) throw error;
+                    showAlert('Event added successfully!');
+                }
+
+                closeEventModal();
+                loadTrackingDetails(currentTrackingId);
+            } catch (error) {
+                console.error('Error saving event:', error);
+                showAlert('Error saving event: ' + error.message, 'error');
+            }
+        }
+
+        function editEvent(eventId) {
+            openEventModal(eventId);
+        }
+
+        async function deleteEvent(eventId) {
+            if (!confirm('Are you sure you want to delete this event?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('tracking_events')
+                    .delete()
+                    .eq('id', eventId);
+
+                if (error) throw error;
+
+                showAlert('Event deleted successfully!');
+                loadTrackingDetails(currentTrackingId);
+            } catch (error) {
+                console.error('Error deleting event:', error);
+                showAlert('Error deleting event: ' + error.message, 'error');
+            }
+        }
+
+        // ==================== DELETE TRACKING ====================
+        async function deleteTracking(trackingId) {
+            if (!confirm('Are you sure you want to delete this tracking number? This will also delete all associated events.')) return;
+
+            try {
+                // First delete all events
+                await supabase
+                    .from('tracking_events')
+                    .delete()
+                    .eq('tracking_id', trackingId);
+
+                // Then delete the tracking
+                const { error } = await supabase
+                    .from('trackings')
+                    .delete()
+                    .eq('id', trackingId);
+
+                if (error) throw error;
+
+                showAlert('Tracking number deleted successfully!');
+                currentTrackingId = null;
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 64px; margin-bottom: 20px;">📦</div>
+                        <h3>Select a tracking number</h3>
+                        <p>Click on a tracking number from the list to view and manage its details</p>
+                    </div>
+                `;
+                loadTrackings();
+            } catch (error) {
+                console.error('Error deleting tracking:', error);
+                showAlert('Error deleting tracking: ' + error.message, 'error');
+            }
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
