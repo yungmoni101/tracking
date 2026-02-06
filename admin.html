@@ -413,11 +413,11 @@
                 <form id="customDetailForm">
                     <div class="form-group">
                         <label>Detail Title *</label>
-                        <input type="text" id="customDetailTitle" required placeholder="e.g., Weight, Dimensions, Contents">
+                        <input type="text" id="customDetailTitle" required placeholder="e.g., Service, Shipped / Billed On, Category, Weight">
                     </div>
                     <div class="form-group">
                         <label>Detail Information *</label>
-                        <input type="text" id="customDetailInfo" required placeholder="e.g., 5.2 lbs">
+                        <input type="text" id="customDetailInfo" required placeholder="e.g., UPS Express Saver®, 10/28/2025, Package">
                     </div>
                 </form>
             </div>
@@ -671,45 +671,15 @@
                     </div>
                 </div>
 
-                <!-- BASIC TRACKING INFO -->
-                <h3 class="section-title">Basic Tracking Information</h3>
-                <div class="detail-grid">
-                    <div class="detail-item">
-                        <label>Tracking Number</label>
-                        <div class="value">${tracking.tracking_number}</div>
-                    </div>
-                    <div class="detail-item">
-                        <label>Shipped / Billed On</label>
-                        <div class="value">${tracking.shipped_date}</div>
-                    </div>
-                    <div class="detail-item">
-                        <label>Service</label>
-                        <div class="value">${tracking.service}</div>
-                    </div>
-                    <div class="detail-item">
-                        <label>Shipment Category</label>
-                        <div class="value">${tracking.shipment_category}</div>
-                    </div>
-                    ${tracking.receiver_name ? `
-                    <div class="detail-item">
-                        <label>Receiver Name</label>
-                        <div class="value">${tracking.receiver_name}</div>
-                    </div>
-                    ` : ''}
-                    ${tracking.delivery_location ? `
-                    <div class="detail-item">
-                        <label>Delivery Location</label>
-                        <div class="value">${tracking.delivery_location}</div>
-                    </div>
-                    ` : ''}
-                </div>
+                <!-- TRACKING NUMBER -->
+                <h3 class="section-title">Tracking: ${tracking.tracking_number}</h3>
 
                 <!-- SHIPMENT DETAILS SECTION -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 15px;">
                     <h3 class="section-title" style="margin: 0; border: none; padding: 0;">Shipment Details</h3>
                     <button class="btn btn-small" onclick="openCustomDetailModal()">+ Add Detail</button>
                 </div>
-                <p style="color: #666; font-size: 13px; margin-top: -10px; margin-bottom: 15px;">Optional custom fields for the Shipment Details tab (e.g., Weight, Dimensions). Unlimited.</p>
+                <p style="color: #666; font-size: 13px; margin-top: -10px; margin-bottom: 15px;">All shipment information fields (Service, Shipped Date, Category, Weight, etc.). Fully customizable.</p>
                 ${customDetails && customDetails.length > 0 ? `
                     <div class="detail-grid">
                         ${customDetails.map(detail => `
@@ -723,7 +693,7 @@
                             </div>
                         `).join('')}
                     </div>
-                ` : '<p style="color: #999; text-align: center; padding: 20px;">No shipment details yet. Add optional details like Weight or Dimensions.</p>'}
+                ` : '<p style="color: #999; text-align: center; padding: 20px;">No shipment details yet. Add details like Service, Shipped Date, Category, Weight, etc.</p>'}
 
                 <!-- PROOF OF DELIVERY SECTION (POD Modal) -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 15px;">

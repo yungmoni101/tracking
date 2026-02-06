@@ -713,8 +713,8 @@
                 <!-- Track Another Package -->
                 <div class="sidebar-card">
                     <h5>Track Another Package</h5>
-                    <input type="text" class="track-input" placeholder="Enter Tracking Number">
-                    <button class="track-btn">Track</button>
+                    <input type="text" id="trackAnotherInput" class="track-input" placeholder="Enter Tracking Number">
+                    <button class="track-btn" onclick="trackAnotherPackage()">Track</button>
                 </div>
             </div>
         </div>
@@ -830,43 +830,430 @@
     <script src="lib/counterup/counterup.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
     
     <!-- Proof of Delivery Modal Script -->
     <script>
-        // Get modal elements
-        const podModal = document.getElementById('podModal');
-        const podLink = document.getElementById('podLink');
-        const closeBtn = document.querySelector('.pod-close');
+        // ==================== SUPABASE CONFIGURATION ====================
+        const SUPABASE_URL = 'https://oezptlpmojaojibotsbs.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lenB0bHBtb2phb2ppYm90c2JzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzODg0MjMsImV4cCI6MjA4NTk2NDQyM30.8cB5vwJzwdl0M9tKxmYGviXnPtA4YlMPDCGkZQzb0WA';
+        
+        // Initialize Supabase client
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Open modal when clicking the Proof of Delivery link
-        if (podLink) {
-            podLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                podModal.classList.add('active');
+        // ==================== GET TRACKING NUMBER FROM URL ====================
+        function getTrackingNumberFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('tracking') || urlParams.get('id') || '1Z2902E30419053424';
+        }
+
+        // ==================== LOAD TRACKING DATA ====================
+        async function loadTrackingData() {
+            const trackingNumber = getTrackingNumberFromURL();
+            
+            try {
+                // Fetch tracking information
+                const { data: tracking, error: trackingError } = await supabaseClient
+                    .from('trackings')
+                    .select('*')
+                    .eq('tracking_number', trackingNumber)
+                    .single();
+
+                if (trackingError) throw trackingError;
+
+                // Fetch tracking events
+                const { data: events, error: eventsError } = await supabaseClient
+                    .from('tracking_events')
+                    .select('*')
+                    .eq('tracking_id', tracking.id)
+                    .order('sort_order', { ascending: false });
+
+                if (eventsError) throw eventsError;
+
+                // Fetch POD details
+                const { data: podDetails, error: podError } = await supabaseClient
+                    .from('pod_details')
+                    .select('*')
+                    .eq('tracking_id', tracking.id)
+                    .order('sort_order', { ascending: true });
+
+                // Populate the page with data
+                populateTrackingPage(tracking, events, podDetails || []);
+            } catch (error) {
+                console.error('Error loading tracking data:', error);
+                showErrorMessage('Tracking number not found. Please check and try again.');
+            }
+        }
+
+        // ==================== POPULATE PAGE WITH DATA ====================
+        function populateTrackingPage(tracking, events, podDetails) {
+            // Update tracking number displays
+            document.querySelectorAll('.tracking-number').forEach(el => {
+                el.textContent = tracking.tracking_number;
+            });
+
+            // Find the most recent delivered event
+            const deliveredEvent = events.find(e => 
+                e.event_title.toLowerCase().includes('delivered') || 
+                e.event_description?.toLowerCase().includes('delivered')
+            );
+
+            // Update delivery status
+            if (deliveredEvent) {
+                const deliveryStatusDiv = document.querySelector('.delivery-status');
+                const deliveryDate = formatDeliveryDate(deliveredEvent.event_date, deliveredEvent.event_time);
+                const deliveryLocation = tracking.delivery_location || 'Location';
+                
+                deliveryStatusDiv.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <div class="delivery-text">
+                        <strong>Delivered On</strong>
+                        <span>${deliveryDate} at ${deliveryLocation}</span>
+                    </div>
+                `;
+            }
+
+            // Update delivery details
+            const deliveryDetails = document.querySelector('.delivery-details');
+            let detailsHTML = '';
+
+            // Delivered To
+            if (deliveredEvent && deliveredEvent.event_location) {
+                detailsHTML += `
+                    <div class="detail-row">
+                        <span class="detail-label">Delivered To</span>
+                        <span class="detail-value">${deliveredEvent.event_location}</span>
+                    </div>
+                `;
+            }
+
+            // Received By
+            if (tracking.receiver_name) {
+                detailsHTML += `
+                    <div class="detail-row">
+                        <span class="detail-label">Received By</span>
+                        <span class="detail-value">${tracking.receiver_name}</span>
+                    </div>
+                `;
+            }
+
+            // Proof of Delivery link
+            detailsHTML += `
+                <div class="detail-row">
+                    <span class="detail-label"></span>
+                    <span class="detail-value">
+                        <a href="#" id="podLink">
+                            Proof of Delivery
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </span>
+                </div>
+            `;
+
+            deliveryDetails.innerHTML = detailsHTML;
+
+            // Update timeline with first 5 events (reverse order - oldest to newest for display)
+            const timelineSection = document.querySelector('.timeline-section');
+            const displayEvents = events.slice().reverse().slice(0, 5);
+            
+            let timelineHTML = '';
+            displayEvents.forEach((event, index) => {
+                const icon = getEventIcon(event.event_title);
+                timelineHTML += `
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            <i class="fas fa-${icon}"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">${event.event_title}</div>
+                            ${event.event_location ? `<div class="timeline-location">${event.event_location}</div>` : ''}
+                            <div class="timeline-date">${event.event_date}, ${event.event_time}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            timelineSection.innerHTML = timelineHTML;
+
+            // Update POD modal with tracking data
+            populatePODModal(tracking, events, podDetails);
+
+            // Update shipping details modal
+            populateShippingModal(tracking, events, podDetails);
+
+            // Re-attach event listeners
+            attachModalEventListeners();
+        }
+
+        // ==================== POPULATE POD MODAL ====================
+        function populatePODModal(tracking, events, podDetails) {
+            // Basic tracking info
+            document.getElementById('podTrackingNumber').textContent = tracking.tracking_number;
+            document.getElementById('podService').textContent = tracking.service || 'N/A';
+            document.getElementById('podShippedOn').textContent = tracking.shipped_date || 'N/A';
+
+            // Find delivered event
+            const deliveredEvent = events.find(e => 
+                e.event_title.toLowerCase().includes('delivered')
+            );
+
+            if (deliveredEvent) {
+                document.getElementById('podDeliveredOn').textContent = 
+                    `${deliveredEvent.event_date} ${deliveredEvent.event_time}`;
+            }
+
+            // Receiver name
+            if (tracking.receiver_name) {
+                document.getElementById('podReceivedBy').textContent = tracking.receiver_name;
+            }
+
+            // Delivered to location
+            if (deliveredEvent && deliveredEvent.event_location) {
+                document.getElementById('podDeliveredTo').textContent = deliveredEvent.event_location;
+            }
+
+            // Delivery location
+            if (tracking.delivery_location) {
+                document.getElementById('podDeliveryLocation').textContent = tracking.delivery_location;
+            }
+        }
+
+        // ==================== POPULATE SHIPPING MODAL ====================
+        function populateShippingModal(tracking, events, podDetails) {
+            // Progress Tab - All events in chronological order (newest first)
+            const progressTab = document.getElementById('progressTab');
+            let eventsHTML = `
+                <div class="info-box">
+                    <strong>You've Got the Details</strong><br>
+                    You're seeing what customer service agents would share with you. If you need additional information, visit <a href="#">Contact Us</a> or contact your shipper.
+                </div>
+            `;
+
+            events.forEach(event => {
+                eventsHTML += `
+                    <div class="tracking-event">
+                        <div class="event-date">
+                            <div class="date">${event.event_date}</div>
+                            <div class="time">${event.event_time}</div>
+                        </div>
+                        <div class="event-details">
+                            <div class="event-title">${event.event_title}</div>
+                            ${event.event_description || event.event_location ? 
+                                `<div class="event-location">${event.event_description ? event.event_description + (event.event_location ? '<br>' : '') : ''}${event.event_location || ''}</div>` 
+                                : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            eventsHTML += '<button class="close-button">Close</button>';
+            progressTab.innerHTML = eventsHTML;
+
+            // Details Tab - POD Details or basic shipment info
+            const detailsTab = document.getElementById('detailsTab');
+            let detailsHTML = `
+                <div class="info-box">
+                    <strong>You've Got the Details</strong><br>
+                    You're seeing what customer service agents would share with you. If you need additional information, visit <a href="#">Contact Us</a> or contact your shipper.
+                </div>
+            `;
+
+            if (podDetails && podDetails.length > 0) {
+                // Use POD details if available
+                detailsHTML += `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; background: #fff; border: 2px solid #ffb500; padding: 25px; border-radius: 8px;">`;
+                
+                podDetails.forEach(detail => {
+                    detailsHTML += `
+                        <div>
+                            <div class="pod-label">${detail.detail_title}</div>
+                            <div class="pod-value" style="color: #333; font-weight: 500;">${detail.detail_info}</div>
+                        </div>
+                    `;
+                });
+                
+                detailsHTML += '</div>';
+            } else {
+                // Use basic tracking info
+                detailsHTML += `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; background: #fff; border: 2px solid #ffb500; padding: 25px; border-radius: 8px;">
+                        <div>
+                            <div class="pod-label">Tracking Number</div>
+                            <div class="pod-value" style="color: #333; font-weight: 500;">${tracking.tracking_number}</div>
+                        </div>
+                        <div>
+                            <div class="pod-label">Shipped / Billed On</div>
+                            <div class="pod-value" style="color: #333; font-weight: 500;">${tracking.shipped_date || 'N/A'}</div>
+                        </div>
+                        <div>
+                            <div class="pod-label">Service</div>
+                            <div class="pod-value" style="color: #333; font-weight: 500;">${tracking.service || 'N/A'}</div>
+                        </div>
+                        <div>
+                            <div class="pod-label">Shipment Category</div>
+                            <div class="pod-value" style="color: #333; font-weight: 500;">${tracking.shipment_category || 'Package'}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            detailsHTML += '<button class="close-button" style="margin-top: 30px;">Close</button>';
+            detailsTab.innerHTML = detailsHTML;
+        }
+
+        // ==================== HELPER FUNCTIONS ====================
+        function formatDeliveryDate(date, time) {
+            // Convert date format (e.g., "11/05/2025" to "Wednesday, November 05")
+            const dateParts = date.split('/');
+            if (dateParts.length === 3) {
+                const dateObj = new Date(dateParts[2], dateParts[0] - 1, dateParts[1]);
+                const options = { weekday: 'long', month: 'long', day: '2-digit' };
+                return dateObj.toLocaleDateString('en-US', options) + ' at ' + time;
+            }
+            return date + ' at ' + time;
+        }
+
+        function getEventIcon(eventTitle) {
+            const title = eventTitle.toLowerCase();
+            if (title.includes('delivered')) return 'check';
+            if (title.includes('out for delivery')) return 'truck';
+            if (title.includes('on the way') || title.includes('in transit')) return 'plane';
+            if (title.includes('picked up') || title.includes('package')) return 'box';
+            if (title.includes('label created')) return 'tag';
+            if (title.includes('arrived') || title.includes('facility')) return 'warehouse';
+            if (title.includes('departed')) return 'shipping-fast';
+            if (title.includes('scan')) return 'barcode';
+            return 'circle';
+        }
+
+        function showErrorMessage(message) {
+            document.querySelector('.content-wrapper').innerHTML = `
+                <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 8px;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 64px; color: #dc3545; margin-bottom: 20px;"></i>
+                    <h2 style="color: #333; margin-bottom: 15px;">Tracking Not Found</h2>
+                    <p style="color: #666; margin-bottom: 30px;">${message}</p>
+                    <a href="tracking.html" class="btn btn-primary">Go to Tracking Page</a>
+                </div>
+            `;
+        }
+
+        function trackAnotherPackage() {
+            const trackingInput = document.getElementById('trackAnotherInput');
+            const trackingNumber = trackingInput.value.trim();
+            
+            if (trackingNumber) {
+                window.location.href = `track.html?tracking=${encodeURIComponent(trackingNumber)}`;
+            } else {
+                alert('Please enter a tracking number');
+            }
+        }
+
+        // ==================== MODAL EVENT LISTENERS ====================
+        function attachModalEventListeners() {
+            // Get modal elements
+            const podModal = document.getElementById('podModal');
+            const podLink = document.getElementById('podLink');
+            const podCloseBtn = document.querySelector('.pod-close');
+
+            const shippingModal = document.getElementById('shippingModal');
+            const shippingLink = document.getElementById('shippingDetailsLink');
+            const shippingCloseBtn = document.querySelector('.shipping-close');
+            const tabs = document.querySelectorAll('.shipping-tab');
+
+            // POD Modal
+            if (podLink) {
+                podLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    podModal.classList.add('active');
+                });
+            }
+
+            if (podCloseBtn) {
+                podCloseBtn.addEventListener('click', function() {
+                    podModal.classList.remove('active');
+                });
+            }
+
+            // Shipping Modal
+            if (shippingLink) {
+                shippingLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    shippingModal.classList.add('active');
+                });
+            }
+
+            if (shippingCloseBtn) {
+                shippingCloseBtn.addEventListener('click', function() {
+                    shippingModal.classList.remove('active');
+                });
+            }
+
+            // Close buttons in modals
+            document.querySelectorAll('.close-button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    podModal.classList.remove('active');
+                    shippingModal.classList.remove('active');
+                });
+            });
+
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const tabName = this.getAttribute('data-tab');
+                    document.getElementById('progressTab').style.display = tabName === 'progress' ? 'block' : 'none';
+                    document.getElementById('detailsTab').style.display = tabName === 'details' ? 'block' : 'none';
+                });
+            });
+
+            // Close modals when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target === podModal) {
+                    podModal.classList.remove('active');
+                }
+                if (e.target === shippingModal) {
+                    shippingModal.classList.remove('active');
+                }
+            });
+
+            // Close modals with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    podModal.classList.remove('active');
+                    shippingModal.classList.remove('active');
+                }
             });
         }
 
-        // Close modal when clicking the X button
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function() {
-                podModal.classList.remove('active');
-            });
-        }
-
-        // Close modal when clicking outside of it
-        window.addEventListener('click', function(e) {
-            if (e.target === podModal) {
-                podModal.classList.remove('active');
+        // ==================== INITIALIZE ON PAGE LOAD ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load tracking data
+            loadTrackingData();
+            
+            // Setup track another package input
+            const trackInput = document.getElementById('trackAnotherInput');
+            if (trackInput) {
+                trackInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        trackAnotherPackage();
+                    }
+                });
             }
         });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && podModal.classList.contains('active')) {
-                podModal.classList.remove('active');
-            }
+        
+        // Newsletter form success message
+        $(document).ready(function() {
+            $('#newsletterForm').on('submit', function() {
+                setTimeout(function() {
+                    $('#newsletterSuccess').html("<div class='alert alert-success mt-2'><button type='button' class='close' data-dismiss='alert'>&times;</button><strong>Thank you for subscribing to our newsletter!</strong></div>");
+                    $('#newsletterForm')[0].reset();
+                }, 500);
+            });
         });
     </script>
 
