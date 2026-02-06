@@ -994,10 +994,8 @@
             `;
 
             events.forEach(event => {
-                // If there's a title, show it bold. Otherwise, show description bold.
+                // Only show title bold if it exists, otherwise show description as normal text
                 const hasTitle = event.event_title && event.event_title.trim() !== '';
-                const eventTitle = hasTitle ? event.event_title : (event.event_description || 'Event');
-                const eventDetails = hasTitle ? event.event_description : '';
                 
                 eventsHTML += `
                     <div class="tracking-event">
@@ -1006,10 +1004,14 @@
                             <div class="time">${event.event_time}</div>
                         </div>
                         <div class="event-details">
-                            <div class="event-title">${eventTitle}</div>
-                            ${eventDetails || event.event_location ? 
-                                `<div class="event-location">${eventDetails ? eventDetails + (event.event_location ? '<br>' : '') : ''}${event.event_location || ''}</div>` 
-                                : ''}
+                            ${hasTitle ? `
+                                <div class="event-title">${event.event_title}</div>
+                                ${event.event_description || event.event_location ? 
+                                    `<div class="event-location">${event.event_description ? event.event_description + (event.event_location ? '<br>' : '') : ''}${event.event_location || ''}</div>` 
+                                    : ''}
+                            ` : `
+                                <div class="event-location">${event.event_description || 'Event'}${event.event_location ? '<br>' + event.event_location : ''}</div>
+                            `}
                         </div>
                     </div>
                 `;
