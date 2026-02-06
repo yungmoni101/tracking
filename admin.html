@@ -615,13 +615,12 @@
 
                 if (trackingError) throw trackingError;
 
-                // Load shipment details (max 2)
+                // Load shipment details
                 const { data: customDetails, error: customError } = await supabaseClient
                     .from('custom_details')
                     .select('*')
                     .eq('tracking_id', trackingId)
-                    .order('sort_order', { ascending: true })
-                    .limit(2);
+                    .order('sort_order', { ascending: true });
 
                 // Load proof of delivery info
                 const { data: podInfo, error: podError } = await supabaseClient
@@ -705,11 +704,12 @@
                     ` : ''}
                 </div>
 
-                <!-- SHIPMENT DETAILS SECTION (Max 2 Details) -->
+                <!-- SHIPMENT DETAILS SECTION -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 15px;">
                     <h3 class="section-title" style="margin: 0; border: none; padding: 0;">Shipment Details</h3>
-                    ${customDetails && customDetails.length < 2 ? `<button class="btn btn-small" onclick="openCustomDetailModal()">+ Add Detail</button>` : ''}
+                    <button class="btn btn-small" onclick="openCustomDetailModal()">+ Add Detail</button>
                 </div>
+                <p style="color: #666; font-size: 13px; margin-top: -10px; margin-bottom: 15px;">Optional custom fields for the Shipment Details tab (e.g., Weight, Dimensions). Unlimited.</p>
                 ${customDetails && customDetails.length > 0 ? `
                     <div class="detail-grid">
                         ${customDetails.map(detail => `
@@ -723,40 +723,39 @@
                             </div>
                         `).join('')}
                     </div>
-                ` : '<p style="color: #999; text-align: center; padding: 20px;">No shipment details yet. You can add up to 2 custom details (e.g., Weight, Dimensions).</p>'}
+                ` : '<p style="color: #999; text-align: center; padding: 20px;">No shipment details yet. Add optional details like Weight or Dimensions.</p>'}
 
-                <!-- PROOF OF DELIVERY SECTION -->
+                <!-- PROOF OF DELIVERY SECTION (POD Modal) -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 15px;">
                     <h3 class="section-title" style="margin: 0; border: none; padding: 0;">Proof of Delivery</h3>
                     <button class="btn btn-small" onclick="openPODCustomerModal()">${podInfo ? 'Edit Customer Name' : '+ Set Customer Name'}</button>
                 </div>
+                <p style="color: #666; font-size: 13px; margin-top: -10px; margin-bottom: 15px;">These details appear in the Proof of Delivery modal popup. Unlimited details.</p>
                 ${podInfo && podInfo.customer_name ? `
                     <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
                         <p style="margin: 0; color: #333;"><strong>Dear ${podInfo.customer_name},</strong></p>
                         <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">This notice serves as proof of delivery for the shipment listed below.</p>
                     </div>
-                ` : '<p style="color: #999; text-align: center; padding: 20px;">No customer name set. Click "Set Customer Name" to add.</p>'}
+                ` : '<p style="color: #999; text-align: center; padding: 20px;">Optional: Set a customer name for the POD greeting.</p>'}
                 
-                ${podInfo && podInfo.customer_name ? `
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h4 style="margin: 0; font-size: 16px; color: #666;">Delivery Details</h4>
-                        <button class="btn btn-small" onclick="openPODDetailModal()">+ Add POD Detail</button>
-                    </div>
-                    ${podDetails && podDetails.length > 0 ? `
-                        <div class="detail-grid">
-                            ${podDetails.map(detail => `
-                                <div class="detail-item">
-                                    <label>${detail.detail_title}</label>
-                                    <div class="value">${detail.detail_info}</div>
-                                    <div style="margin-top: 8px;">
-                                        <button class="btn btn-small btn-secondary" onclick="editPODDetail('${detail.id}', '${detail.detail_title.replace(/'/g, "\\'")}', '${detail.detail_info.replace(/'/g, "\\'")}')">Edit</button>
-                                        <button class="btn btn-small btn-danger" onclick="deletePODDetail('${detail.id}')">Delete</button>
-                                    </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; margin-top: 20px;">
+                    <h4 style="margin: 0; font-size: 16px; color: #666;">POD Details</h4>
+                    <button class="btn btn-small" onclick="openPODDetailModal()">+ Add POD Detail</button>
+                </div>
+                ${podDetails && podDetails.length > 0 ? `
+                    <div class="detail-grid">
+                        ${podDetails.map(detail => `
+                            <div class="detail-item">
+                                <label>${detail.detail_title}</label>
+                                <div class="value">${detail.detail_info}</div>
+                                <div style="margin-top: 8px;">
+                                    <button class="btn btn-small btn-secondary" onclick="editPODDetail('${detail.id}', '${detail.detail_title.replace(/'/g, "\\'")}', '${detail.detail_info.replace(/'/g, "\\'")}')">Edit</button>
+                                    <button class="btn btn-small btn-danger" onclick="deletePODDetail('${detail.id}')">Delete</button>
                                 </div>
-                            `).join('')}
-                        </div>
-                    ` : '<p style="color: #999; text-align: center; padding: 20px;">No delivery details yet. Add details like "Delivered On", "Received By", etc.</p>'}
-                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : '<p style="color: #999; text-align: center; padding: 20px;">No POD details yet. Add details like "Delivered On", "Service", "Delivery Location", etc.</p>'}
 
                 <!-- TRACKING EVENTS/PROGRESS -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 15px;">
@@ -983,17 +982,6 @@
                     if (error) throw error;
                     showAlert('Shipment detail updated successfully!');
                 } else {
-                    // Check if already have 2 details
-                    const { data: existingDetails } = await supabaseClient
-                        .from('custom_details')
-                        .select('id')
-                        .eq('tracking_id', currentTrackingId);
-
-                    if (existingDetails && existingDetails.length >= 2) {
-                        showAlert('Maximum 2 shipment details allowed. Please delete one first.', 'error');
-                        return;
-                    }
-
                     // Create new
                     const { data: maxOrder } = await supabaseClient
                         .from('custom_details')
