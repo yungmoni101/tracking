@@ -831,17 +831,33 @@
                 e.event_description?.toLowerCase().includes('delivered')
             );
 
+            // Get the most recent event (first in array since sorted newest first)
+            const latestEvent = events[0];
+
             // Update delivery status
+            const deliveryStatusDiv = document.querySelector('.delivery-status');
+            
             if (deliveredEvent) {
-                const deliveryStatusDiv = document.querySelector('.delivery-status');
+                // Package is delivered
                 const deliveryDate = formatDeliveryDate(deliveredEvent.event_date, deliveredEvent.event_time);
-                const deliveryLocation = tracking.delivery_location || 'Location';
+                const deliveryLocation = tracking.delivery_location || deliveredEvent.event_location || 'Location';
                 
+                deliveryStatusDiv.style.background = '#28a745';
                 deliveryStatusDiv.innerHTML = `
                     <i class="fas fa-check-circle"></i>
                     <div class="delivery-text">
                         <strong>Delivered On</strong>
                         <span>${deliveryDate} at ${deliveryLocation}</span>
+                    </div>
+                `;
+            } else if (latestEvent) {
+                // Package is in transit - show latest status
+                deliveryStatusDiv.style.background = '#0077c8';
+                deliveryStatusDiv.innerHTML = `
+                    <i class="fas fa-shipping-fast"></i>
+                    <div class="delivery-text">
+                        <strong>${latestEvent.event_title}</strong>
+                        <span>${latestEvent.event_date} at ${latestEvent.event_time}</span>
                     </div>
                 `;
             }
@@ -850,38 +866,62 @@
             const deliveryDetails = document.querySelector('.delivery-details');
             let detailsHTML = '';
 
-            // Delivered To
-            if (deliveredEvent && deliveredEvent.event_location) {
+            if (deliveredEvent) {
+                // Show delivery details for delivered packages
+                
+                // Delivered To
+                if (deliveredEvent.event_location) {
+                    detailsHTML += `
+                        <div class="detail-row">
+                            <span class="detail-label">Delivered To</span>
+                            <span class="detail-value">${deliveredEvent.event_location}</span>
+                        </div>
+                    `;
+                }
+
+                // Received By
+                if (tracking.receiver_name) {
+                    detailsHTML += `
+                        <div class="detail-row">
+                            <span class="detail-label">Received By</span>
+                            <span class="detail-value">${tracking.receiver_name}</span>
+                        </div>
+                    `;
+                }
+
+                // Proof of Delivery link (only for delivered packages)
                 detailsHTML += `
                     <div class="detail-row">
-                        <span class="detail-label">Delivered To</span>
-                        <span class="detail-value">${deliveredEvent.event_location}</span>
+                        <span class="detail-label"></span>
+                        <span class="detail-value">
+                            <a href="#" id="podLink">
+                                Proof of Delivery
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </span>
                     </div>
                 `;
-            }
+            } else if (latestEvent) {
+                // Show current status details for in-transit packages
+                
+                if (latestEvent.event_location) {
+                    detailsHTML += `
+                        <div class="detail-row">
+                            <span class="detail-label">Current Location</span>
+                            <span class="detail-value">${latestEvent.event_location}</span>
+                        </div>
+                    `;
+                }
 
-            // Received By
-            if (tracking.receiver_name) {
-                detailsHTML += `
-                    <div class="detail-row">
-                        <span class="detail-label">Received By</span>
-                        <span class="detail-value">${tracking.receiver_name}</span>
-                    </div>
-                `;
+                if (latestEvent.event_description) {
+                    detailsHTML += `
+                        <div class="detail-row">
+                            <span class="detail-label">Status Details</span>
+                            <span class="detail-value">${latestEvent.event_description}</span>
+                        </div>
+                    `;
+                }
             }
-
-            // Proof of Delivery link
-            detailsHTML += `
-                <div class="detail-row">
-                    <span class="detail-label"></span>
-                    <span class="detail-value">
-                        <a href="#" id="podLink">
-                            Proof of Delivery
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </span>
-                </div>
-            `;
 
             deliveryDetails.innerHTML = detailsHTML;
 
@@ -1219,63 +1259,7 @@
         </div>
     </div>
 
-    <!-- Shipping Details Modal Script -->
-    <script>
-        // Get modal elements
-        const shippingModal = document.getElementById('shippingModal');
-        const shippingLink = document.getElementById('shippingDetailsLink');
-        const shippingCloseBtn = document.querySelector('.shipping-close');
-        const shippingCloseButton = document.querySelector('.close-button');
-        const tabs = document.querySelectorAll('.shipping-tab');
-
-        // Open modal when clicking the View All Shipping Details link
-        if (shippingLink) {
-            shippingLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                shippingModal.classList.add('active');
-            });
-        }
-
-        // Close modal when clicking the X button
-        if (shippingCloseBtn) {
-            shippingCloseBtn.addEventListener('click', function() {
-                shippingModal.classList.remove('active');
-            });
-        }
-
-        // Close modal when clicking the Close button
-        if (shippingCloseButton) {
-            shippingCloseButton.addEventListener('click', function() {
-                shippingModal.classList.remove('active');
-            });
-        }
-
-        // Close modal when clicking outside of it
-        window.addEventListener('click', function(e) {
-            if (e.target === shippingModal) {
-                shippingModal.classList.remove('active');
-            }
-        });
-
-        // Tab switching
-        tabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                tabs.forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                
-                const tabName = this.getAttribute('data-tab');
-                document.getElementById('progressTab').style.display = tabName === 'progress' ? 'block' : 'none';
-                document.getElementById('detailsTab').style.display = tabName === 'details' ? 'block' : 'none';
-            });
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && shippingModal.classList.contains('active')) {
-                shippingModal.classList.remove('active');
-            }
-        });
-        
+    <script>        
         // Newsletter form success message
         $(document).ready(function() {
             $('#newsletterForm').on('submit', function() {
