@@ -794,7 +794,7 @@
 
             // Find the most recent delivered event
             const deliveredEvent = events.find(e => 
-                e.event_title.toLowerCase().includes('delivered') || 
+                (e.event_title && e.event_title.toLowerCase().includes('delivered')) ||
                 e.event_description?.toLowerCase().includes('delivered')
             );
 
@@ -819,11 +819,12 @@
                 `;
             } else if (latestEvent) {
                 // Package is in transit - show latest status
+                const statusText = latestEvent.event_title || latestEvent.event_description || 'In Transit';
                 deliveryStatusDiv.style.background = '#d32f2f';
                 deliveryStatusDiv.innerHTML = `
                     <i class="fas fa-shipping-fast"></i>
                     <div class="delivery-text">
-                        <strong>${latestEvent.event_title}</strong>
+                        <strong>${statusText}</strong>
                         <span>${latestEvent.event_date} at ${latestEvent.event_time}</span>
                     </div>
                 `;
@@ -892,9 +893,11 @@
 
             deliveryDetails.innerHTML = detailsHTML;
 
-            // Update timeline with first 5 events (reverse order - oldest to newest for display)
+            // Update timeline with first 5 events that have titles (reverse order - oldest to newest for display)
             const timelineSection = document.querySelector('.timeline-section');
-            const displayEvents = events.slice().reverse().slice(0, 5);
+            // Filter to only show events with titles on main page
+            const eventsWithTitles = events.filter(e => e.event_title && e.event_title.trim() !== '');
+            const displayEvents = eventsWithTitles.slice().reverse().slice(0, 5);
             
             let timelineHTML = '';
             displayEvents.forEach((event, index) => {
@@ -979,11 +982,13 @@
             let eventsHTML = `
                 <div class="info-box">
                     <strong>You've Got the Details</strong><br>
-                    You're seeing what customer service agents would share with you. If you need additional information, visit <a href="#">Contact Us</a> or contact your shipper.
+                    You're seeing what customer service agents would share with you. If you need additional information, visit <a href="contact.html">Contact Us</a> or contact your shipper.
                 </div>
             `;
 
             events.forEach(event => {
+                const eventTitle = event.event_title || event.event_description || 'Event';
+                const eventDetails = event.event_title ? event.event_description : '';
                 eventsHTML += `
                     <div class="tracking-event">
                         <div class="event-date">
@@ -991,9 +996,9 @@
                             <div class="time">${event.event_time}</div>
                         </div>
                         <div class="event-details">
-                            <div class="event-title">${event.event_title}</div>
-                            ${event.event_description || event.event_location ? 
-                                `<div class="event-location">${event.event_description ? event.event_description + (event.event_location ? '<br>' : '') : ''}${event.event_location || ''}</div>` 
+                            <div class="event-title">${eventTitle}</div>
+                            ${eventDetails || event.event_location ? 
+                                `<div class="event-location">${eventDetails ? eventDetails + (event.event_location ? '<br>' : '') : ''}${event.event_location || ''}</div>` 
                                 : ''}
                         </div>
                     </div>
@@ -1008,7 +1013,7 @@
             let detailsHTML = `
                 <div class="info-box">
                     <strong>You've Got the Details</strong><br>
-                    You're seeing what customer service agents would share with you. If you need additional information, visit <a href="#">Contact Us</a> or contact your shipper.
+                    You're seeing what customer service agents would share with you. If you need additional information, visit <a href="contact.html">Contact Us</a> or contact your shipper.
                 </div>
             `;
 
