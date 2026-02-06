@@ -699,54 +699,7 @@
                 <span class="pod-close">&times;</span>
             </div>
             <div class="pod-modal-body">
-                <p class="pod-greeting">Dear Customer,</p>
-                <p class="pod-intro">This notice serves as proof of delivery for the shipment listed below.</p>
-                
-                <div class="pod-section">
-                    <div class="pod-label">Tracking Number</div>
-                    <div class="pod-value" id="podTrackingNumber"></div>
-                </div>
-
-                <div class="pod-grid">
-                    <div>
-                        <div class="pod-label">Service</div>
-                        <div class="pod-value" id="podService"></div>
-                    </div>
-                    <div>
-                        <div class="pod-label">Shipped / Billed On</div>
-                        <div class="pod-value" id="podShippedOn"></div>
-                    </div>
-                </div>
-
-                <div class="pod-grid">
-                    <div>
-                        <div class="pod-label">Delivered On</div>
-                        <div class="pod-value" id="podDeliveredOn"></div>
-                    </div>
-                    <div>
-                        <div class="pod-label">Received By</div>
-                        <div class="pod-value" id="podReceivedBy"></div>
-                    </div>
-                </div>
-
-                <div class="pod-grid">
-                    <div>
-                        <div class="pod-label">Delivered To</div>
-                        <div class="pod-value" id="podDeliveredTo"></div>
-                    </div>
-                    <div>
-                        <div class="pod-label">Delivery Location</div>
-                        <div class="pod-value" id="podDeliveryLocation"></div>
-                    </div>
-                </div>
-
-                <div class="pod-footer">
-                    <p>Please print for your records as photo and details are only available for a limited time.</p>
-                    <p>Sincerely,</p>
-                    <p>UPS</p>
-                    <p style="margin-top: 15px; color: #999;">Tracking results provided by UPS: <span id="podTimestamp">02/05/2026 5:29 PM EST</span></p>
-                    <a href="#" class="pod-print-link" onclick="window.print(); return false;">Print this page</a>
-                </div>
+                <p class="pod-greeting">Loading...</p>
             </div>
         </div>
     </div>
@@ -803,15 +756,29 @@
 
                 if (eventsError) throw eventsError;
 
-                // Fetch POD details
-                const { data: podDetails, error: podError } = await supabaseClient
+                // Fetch custom details for POD modal
+                const { data: customDetails, error: customError } = await supabaseClient
+                    .from('custom_details')
+                    .select('*')
+                    .eq('tracking_id', tracking.id)
+                    .order('sort_order', { ascending: true });
+
+                // Fetch proof of delivery info (customer name)
+                const { data: podInfo, error: podError } = await supabaseClient
+                    .from('proof_of_delivery')
+                    .select('*')
+                    .eq('tracking_id', tracking.id)
+                    .maybeSingle();
+
+                // Fetch POD details for shipping modal
+                const { data: podDetails, error: podDetailsError } = await supabaseClient
                     .from('pod_details')
                     .select('*')
                     .eq('tracking_id', tracking.id)
                     .order('sort_order', { ascending: true });
 
                 // Populate the page with data
-                populateTrackingPage(tracking, events, podDetails || []);
+                populateTrackingPage(tracking, events, customDetails || [], podInfo, podDetails || []);
             } catch (error) {
                 console.error('Error loading tracking data:', error);
                 showErrorMessage('Tracking number not found. Please check and try again.');
@@ -819,7 +786,7 @@
         }
 
         // ==================== POPULATE PAGE WITH DATA ====================
-        function populateTrackingPage(tracking, events, podDetails) {
+        function populateTrackingPage(tracking, events, customDetails, podInfo, podDetails) {
             // Update tracking number displays
             document.querySelectorAll('.tracking-number').forEach(el => {
                 el.textContent = tracking.tracking_number;
@@ -949,7 +916,7 @@
             timelineSection.innerHTML = timelineHTML;
 
             // Update POD modal with tracking data
-            populatePODModal(tracking, events, podDetails);
+            populatePODModal(tracking, customDetails, podInfo);
 
             // Update shipping details modal
             populateShippingModal(tracking, events, podDetails);
@@ -959,36 +926,50 @@
         }
 
         // ==================== POPULATE POD MODAL ====================
-        function populatePODModal(tracking, events, podDetails) {
-            // Basic tracking info
-            document.getElementById('podTrackingNumber').textContent = tracking.tracking_number;
-            document.getElementById('podService').textContent = tracking.service || 'N/A';
-            document.getElementById('podShippedOn').textContent = tracking.shipped_date || 'N/A';
-
-            // Find delivered event
-            const deliveredEvent = events.find(e => 
-                e.event_title.toLowerCase().includes('delivered')
-            );
-
-            if (deliveredEvent) {
-                document.getElementById('podDeliveredOn').textContent = 
-                    `${deliveredEvent.event_date} ${deliveredEvent.event_time}`;
+        function populatePODModal(tracking, customDetails, podInfo) {
+            const modalBody = document.querySelector('.pod-modal-body');
+            
+            // Update greeting with customer name
+            const customerName = podInfo?.customer_name || 'Customer';
+            
+            let modalHTML = `
+                <p class="pod-greeting">Dear ${customerName},</p>
+                <p class="pod-intro">This notice serves as proof of delivery for the shipment listed below.</p>
+                
+                <div class="pod-section">
+                    <div class="pod-label">Tracking Number</div>
+                    <div class="pod-value">${tracking.tracking_number}</div>
+                </div>
+            `;
+            
+            // Add custom details in grid format
+            if (customDetails && customDetails.length > 0) {
+                modalHTML += '<div class="pod-grid">';
+                
+                customDetails.forEach((detail, index) => {
+                    modalHTML += `
+                        <div>
+                            <div class="pod-label">${detail.detail_title}</div>
+                            <div class="pod-value">${detail.detail_info}</div>
+                        </div>
+                    `;
+                });
+                
+                modalHTML += '</div>';
             }
-
-            // Receiver name
-            if (tracking.receiver_name) {
-                document.getElementById('podReceivedBy').textContent = tracking.receiver_name;
-            }
-
-            // Delivered to location
-            if (deliveredEvent && deliveredEvent.event_location) {
-                document.getElementById('podDeliveredTo').textContent = deliveredEvent.event_location;
-            }
-
-            // Delivery location
-            if (tracking.delivery_location) {
-                document.getElementById('podDeliveryLocation').textContent = tracking.delivery_location;
-            }
+            
+            // Add footer
+            modalHTML += `
+                <div class="pod-footer">
+                    <p>Please print for your records as photo and details are only available for a limited time.</p>
+                    <p>Sincerely,</p>
+                    <p>AeroTrack</p>
+                    <p style="margin-top: 15px; color: #999;">Tracking results provided by AeroTrack: <span id="podTimestamp">${new Date().toLocaleString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })} EST</span></p>
+                    <a href="#" class="pod-print-link" onclick="window.print(); return false;">Print this page</a>
+                </div>
+            `;
+            
+            modalBody.innerHTML = modalHTML;
         }
 
         // ==================== POPULATE SHIPPING MODAL ====================
