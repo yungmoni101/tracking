@@ -127,13 +127,13 @@
             top: 45px;
             bottom: 0;
             width: 2px;
-            background: #00897b;
+            background: #dc3545;
         }
         .timeline-icon {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: #00897b;
+            background: #dc3545;
             color: white;
             display: flex;
             align-items: center;
@@ -145,8 +145,8 @@
         }
         .timeline-icon.arrow {
             background: white;
-            border: 2px solid #00897b;
-            color: #00897b;
+            border: 2px solid #dc3545;
+            color: #dc3545;
         }
         .timeline-content {
             flex: 1;
@@ -989,13 +989,16 @@
             let eventsHTML = `
                 <div class="info-box">
                     <strong>You've Got the Details</strong><br>
-                    You're seeing what customer service agents would share with you. If you need additional information, visit <a href="contact.html">Contact Us</a> or contact your shipper.
+                    You're seeing what customer service agents would share with you. For additional information, visit <a href="#" onclick="toggleChat(); return false;" style="cursor: pointer;">Live Chat</a> to speak with a customer service agent or contact your shipper.
                 </div>
             `;
 
             events.forEach(event => {
-                const eventTitle = event.event_title || event.event_description || 'Event';
-                const eventDetails = event.event_title ? event.event_description : '';
+                // If there's a title, show it bold. Otherwise, show description bold.
+                const hasTitle = event.event_title && event.event_title.trim() !== '';
+                const eventTitle = hasTitle ? event.event_title : (event.event_description || 'Event');
+                const eventDetails = hasTitle ? event.event_description : '';
+                
                 eventsHTML += `
                     <div class="tracking-event">
                         <div class="event-date">
@@ -1020,7 +1023,7 @@
             let detailsHTML = `
                 <div class="info-box">
                     <strong>You've Got the Details</strong><br>
-                    You're seeing what customer service agents would share with you. If you need additional information, visit <a href="contact.html">Contact Us</a> or contact your shipper.
+                    You're seeing what customer service agents would share with you. For additional information, visit <a href="#" onclick="toggleChat(); return false;" style="cursor: pointer;">Live Chat</a> to speak with a customer service agent or contact your shipper.
                 </div>
             `;
 
@@ -1251,6 +1254,546 @@
             </div>
         </div>
     </div>
+
+    <!-- Chat Widget -->
+    <div id="chatWidget" class="chat-widget">
+        <div id="chatButton" class="chat-button">
+            <i class="fas fa-comments"></i>
+            <span class="chat-badge" id="chatBadge" style="display: none;">0</span>
+        </div>
+        
+        <div id="chatWindow" class="chat-window">
+            <div class="chat-header">
+                <div>
+                    <h3>AeroTrack Assistant</h3>
+                    <p class="chat-tracking-id">Tracking: <span id="chatTrackingNumber">Loading...</span></p>
+                </div>
+                <button id="closeChatBtn" class="chat-close-btn">&times;</button>
+            </div>
+            
+            <div id="chatMessages" class="chat-messages">
+                <div class="chat-message admin">
+                    <div class="message-bubble">
+                        <strong>AeroTrack Virtual Assistant</strong><br>
+                        I'm here to help! Type a message below if you have any questions about your shipment.
+                    </div>
+                    <div class="message-time" id="initialMessageTime"></div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" placeholder="Type your message..." maxlength="500">
+                <button id="sendChatBtn" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Chat Widget Styles */
+        .chat-widget {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .chat-button {
+            width: 60px;
+            height: 60px;
+            background: #0066cc;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,102,204,0.4);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .chat-button:hover {
+            background: #0052a3;
+            box-shadow: 0 6px 16px rgba(0,102,204,0.5);
+            transform: scale(1.05);
+        }
+        
+        .chat-button i {
+            font-size: 28px;
+        }
+        
+        .chat-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+        
+        .chat-window {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 380px;
+            height: 550px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-window.active {
+            display: flex;
+        }
+        
+        .chat-header {
+            background: #0066cc;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .chat-tracking-id {
+            margin: 5px 0 0 0;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .chat-close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 32px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        
+        .chat-close-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .chat-message {
+            display: flex;
+            flex-direction: column;
+            max-width: 80%;
+        }
+        
+        .chat-message.admin {
+            align-items: flex-start;
+        }
+        
+        .chat-message.customer {
+            align-items: flex-end;
+            align-self: flex-end;
+        }
+        
+        .message-bubble {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+        
+        .chat-message.admin .message-bubble {
+            background: white;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .chat-message.customer .message-bubble {
+            background: #0066cc;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+            padding: 0 8px;
+        }
+        
+        .chat-input-container {
+            padding: 16px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 10px;
+        }
+        
+        #chatInput {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        #chatInput:focus {
+            border-color: #0066cc;
+        }
+        
+        .send-btn {
+            width: 44px;
+            height: 44px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .send-btn:hover {
+            background: #0052a3;
+        }
+        
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+        
+        /* Responsive */
+        @media (max-width: 480px) {
+            .chat-window {
+                width: 100%;
+                height: 100%;
+                bottom: 0;
+                right: 0;
+                border-radius: 0;
+            }
+            
+            .chat-button {
+                width: 56px;
+                height: 56px;
+            }
+        }
+    </style>
+
+    <script>
+        // ==================== CHAT SYSTEM ====================
+        let chatSessionId = null;
+        let chatTrackingNumber = null;
+        let chatSubscription = null;
+        let emailSent = false;
+        
+        // Generate unique session ID
+        function generateSessionId() {
+            return 'chat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+        
+        // Initialize chat
+        async function initializeChat() {
+            chatTrackingNumber = getTrackingNumberFromURL();
+            chatSessionId = generateSessionId();
+            
+            // Update tracking number in chat header
+            document.getElementById('chatTrackingNumber').textContent = chatTrackingNumber;
+            
+            // Set initial message time
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            document.getElementById('initialMessageTime').textContent = timeStr;
+            
+            // Create chat session in Supabase
+            try {
+                const { data, error } = await supabaseClient
+                    .from('chat_sessions')
+                    .insert({
+                        tracking_number: chatTrackingNumber,
+                        session_id: chatSessionId,
+                        is_active: true,
+                        email_sent: false,
+                        expires_at: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString() // 2 hours from now
+                    });
+                
+                if (error) console.error('Error creating chat session:', error);
+                
+                // Load existing messages for this tracking number
+                await loadChatMessages();
+                
+                // Subscribe to real-time updates
+                subscribeToChat();
+            } catch (error) {
+                console.error('Error initializing chat:', error);
+            }
+        }
+        
+        // Load existing messages
+        async function loadChatMessages() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('chat_messages')
+                    .select('*')
+                    .eq('tracking_number', chatTrackingNumber)
+                    .gte('created_at', new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()) // Last 2 hours
+                    .order('created_at', { ascending: true });
+                
+                if (error) throw error;
+                
+                if (data && data.length > 0) {
+                    const chatMessages = document.getElementById('chatMessages');
+                    // Keep only the initial admin message
+                    const initialMsg = chatMessages.querySelector('.chat-message.admin');
+                    chatMessages.innerHTML = '';
+                    chatMessages.appendChild(initialMsg);
+                    
+                    // Add loaded messages
+                    data.forEach(msg => {
+                        displayMessage(msg.message_text, msg.sender_type, new Date(msg.created_at), false);
+                    });
+                    
+                    scrollToBottom();
+                }
+            } catch (error) {
+                console.error('Error loading chat messages:', error);
+            }
+        }
+        
+        // Subscribe to real-time chat updates
+        function subscribeToChat() {
+            chatSubscription = supabaseClient
+                .channel('chat_' + chatTrackingNumber)
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'chat_messages',
+                        filter: `tracking_number=eq.${chatTrackingNumber}`
+                    },
+                    (payload) => {
+                        // Only display if it's from admin (to avoid duplicates for customer messages)
+                        if (payload.new.sender_type === 'admin') {
+                            displayMessage(payload.new.message_text, 'admin', new Date(payload.new.created_at), true);
+                            
+                            // Update badge
+                            const badge = document.getElementById('chatBadge');
+                            const currentCount = parseInt(badge.textContent || '0');
+                            badge.textContent = currentCount + 1;
+                            badge.style.display = 'flex';
+                        }
+                    }
+                )
+                .subscribe();
+        }
+        
+        // Send message
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Display message immediately
+            displayMessage(message, 'customer', new Date(), false);
+            input.value = '';
+            
+            // Send email notification to admin (only once per session)
+            if (!emailSent) {
+                await sendEmailNotification(message);
+                emailSent = true;
+            }
+            
+            // Save message to Supabase
+            try {
+                const { data, error } = await supabaseClient
+                    .from('chat_messages')
+                    .insert({
+                        session_id: chatSessionId,
+                        tracking_number: chatTrackingNumber,
+                        sender_type: 'customer',
+                        sender_name: 'Customer',
+                        message_text: message,
+                        is_read: false
+                    });
+                
+                if (error) throw error;
+            } catch (error) {
+                console.error('Error sending message:', error);
+            }
+        }
+        
+        // Send email notification to admin (silent)
+        async function sendEmailNotification(firstMessage) {
+            try {
+                // Update session to mark email as sent
+                await supabaseClient
+                    .from('chat_sessions')
+                    .update({ email_sent: true })
+                    .eq('session_id', chatSessionId);
+                
+                // Send email via Formspree (silently) 
+                const formData = new FormData();
+                formData.append('name', 'Chat Notification');
+                formData.append('email', 'noreply@aerotrack.com');
+                formData.append('phone', chatTrackingNumber);
+                formData.append('message', `New chat message from tracking ${chatTrackingNumber}:\n\n"${firstMessage}"\n\nSession ID: ${chatSessionId}\n\nPlease check the admin panel to respond.`);
+                formData.append('_subject', `New Chat: ${chatTrackingNumber}`);
+                
+                // Send silently (no user feedback)
+                fetch('https://formspree.io/f/xqedzwwe', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                }).catch(err => console.error('Email notification error:', err));
+                
+            } catch (error) {
+                console.error('Error sending email notification:', error);
+            }
+        }
+        
+        // Display message in chat
+        function displayMessage(text, senderType, timestamp, playSound = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${senderType}`;
+            
+            const timeStr = timestamp.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit', 
+                hour12: true 
+            });
+            
+            messageDiv.innerHTML = `
+                <div class="message-bubble">${escapeHtml(text)}</div>
+                <div class="message-time">${timeStr}</div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+            
+            // Play sound for admin messages (if needed)
+            if (playSound && senderType === 'admin') {
+                // Optional: play notification sound
+            }
+        }
+        
+        // Scroll to bottom of messages
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Toggle chat window
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            const chatButton = document.getElementById('chatButton');
+            const badge = document.getElementById('chatBadge');
+            
+            if (chatWindow.classList.contains('active')) {
+                chatWindow.classList.remove('active');
+                chatButton.style.display = 'flex';
+            } else {
+                chatWindow.classList.add('active');
+                chatButton.style.display = 'none';
+                badge.style.display = 'none';
+                badge.textContent = '0';
+                
+                // Initialize chat if not already done
+                if (!chatSessionId) {
+                    initializeChat();
+                }
+            }
+        }
+        
+        // Event listeners for chat
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatButton = document.getElementById('chatButton');
+            const closeChatBtn = document.getElementById('closeChatBtn');
+            const sendChatBtn = document.getElementById('sendChatBtn');
+            const chatInput = document.getElementById('chatInput');
+            
+            chatButton.addEventListener('click', toggleChat);
+            closeChatBtn.addEventListener('click', toggleChat);
+            sendChatBtn.addEventListener('click', sendMessage);
+            
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Clean up subscription on page unload
+            window.addEventListener('beforeunload', function() {
+                if (chatSubscription) {
+                    supabaseClient.removeChannel(chatSubscription);
+                }
+            });
+        });
+    </script>
 
     <script>        
         // Newsletter form success message
