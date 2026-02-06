@@ -468,7 +468,7 @@
             }
 
             listContainer.innerHTML = trackings.map(tracking => `
-                <div class="tracking-item" onclick="loadTrackingDetails('${tracking.id}')">
+                <div class="tracking-item" onclick="loadTrackingDetails('${tracking.id}', event)">
                     <div class="tracking-item-number">${tracking.tracking_number}</div>
                     <div class="tracking-item-date">Created: ${new Date(tracking.created_at).toLocaleDateString()}</div>
                 </div>
@@ -527,7 +527,7 @@
         }
 
         // ==================== LOAD TRACKING DETAILS ====================
-        async function loadTrackingDetails(trackingId) {
+        async function loadTrackingDetails(trackingId, event = null) {
             currentTrackingId = trackingId;
             
             try {
@@ -555,7 +555,9 @@
                 document.querySelectorAll('.tracking-item').forEach(item => {
                     item.classList.remove('active');
                 });
-                event.target.closest('.tracking-item')?.classList.add('active');
+                if (event && event.target) {
+                    event.target.closest('.tracking-item')?.classList.add('active');
+                }
             } catch (error) {
                 console.error('Error loading tracking details:', error);
                 showAlert('Error loading details: ' + error.message, 'error');
