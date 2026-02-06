@@ -595,15 +595,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             else
             {
-
-                const link = document.createElement('a');
-                link.href = `https://aerotrack.com.pk/tracking?id=${track.value}`;
-                link.target = '_blank';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                // Redirect to track.html with tracking number
+                window.location.href = `track.html?tracking=${encodeURIComponent(track.value)}`;
             }
-            console.log(track.value);
         }
 
         track.addEventListener('input', function ()
