@@ -410,20 +410,15 @@
         console.log('🟢 ADMIN.HTML LOADED - VERSION: 2026-02-06-16-05-00');
         console.log('🟢 Script starting - checking Supabase...');
         
-        // Cache Buster: 2026-02-06-16-00-ULTIMATE-FIX
+        // Cache Buster: 2026-02-06-17-00-NEW-SUPABASE-PROJECT
         // ==================== SUPABASE CONFIGURATION ====================
-        // Replace these with your actual Supabase credentials
-        const SUPABASE_URL = 'https://phkdpxeamlynzunhiuso.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBoa2RweGVhbWx5bnp1bmhpdXNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0OTE1NDQsImV4cCI6MjA4NDA2NzU0NH0.ugPH6sqQ8pI9nP4T-qghFYaIq6AA9acGYsYfcA7MmOM';
+        // NEW FRESH PROJECT CREDENTIALS
+        const SUPABASE_URL = 'https://oezptlpmojaojibotsbs.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lenB0bHBtb2phb2ppYm90c2JzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzODg0MjMsImV4cCI6MjA4NTk2NDQyM30.8cB5vwJzwdl0M9tKxmYGviXnPtA4YlMPDCGkZQzb0WA';
         
-        // Initialize Supabase client
-        let supabase;
-        if (!window.aerotrackSupabase) {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            window.aerotrackSupabase = supabase;
-        } else {
-            supabase = window.aerotrackSupabase;
-        }
+        // Initialize Supabase client (using unique variable name to avoid conflict with CDN global)
+        const supabaseClient = window.aerotrackSupabase ?? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        window.aerotrackSupabase = supabaseClient;
 
         // ==================== STATE ====================
         let currentTrackingId = null;
@@ -450,7 +445,7 @@
         // ==================== LOAD TRACKINGS ====================
         async function loadTrackings() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('trackings')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -504,7 +499,7 @@
             }
 
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('trackings')
                     .insert([{
                         tracking_number: trackingNumber,
@@ -537,7 +532,7 @@
             
             try {
                 // Load tracking info
-                const { data: tracking, error: trackingError } = await supabase
+                const { data: tracking, error: trackingError } = await supabaseClient
                     .from('trackings')
                     .select('*')
                     .eq('id', trackingId)
@@ -546,7 +541,7 @@
                 if (trackingError) throw trackingError;
 
                 // Load events
-                const { data: events, error: eventsError } = await supabase
+                const { data: events, error: eventsError } = await supabaseClient
                     .from('tracking_events')
                     .select('*')
                     .eq('tracking_id', trackingId)
@@ -655,7 +650,7 @@
 
         async function loadEventData(eventId) {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('tracking_events')
                     .select('*')
                     .eq('id', eventId)
@@ -689,7 +684,7 @@
             try {
                 if (currentEventId) {
                     // Update existing event
-                    const { error } = await supabase
+                    const { error } = await supabaseClient
                         .from('tracking_events')
                         .update({
                             event_date: eventDate,
@@ -705,7 +700,7 @@
                 } else {
                     // Create new event
                     // Get the current max sort_order
-                    const { data: maxOrder } = await supabase
+                    const { data: maxOrder } = await supabaseClient
                         .from('tracking_events')
                         .select('sort_order')
                         .eq('tracking_id', currentTrackingId)
@@ -714,7 +709,7 @@
 
                     const nextOrder = maxOrder && maxOrder[0] ? maxOrder[0].sort_order + 1 : 1;
 
-                    const { error } = await supabase
+                    const { error } = await supabaseClient
                         .from('tracking_events')
                         .insert([{
                             tracking_id: currentTrackingId,
@@ -746,7 +741,7 @@
             if (!confirm('Are you sure you want to delete this event?')) return;
 
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('tracking_events')
                     .delete()
                     .eq('id', eventId);
@@ -767,13 +762,13 @@
 
             try {
                 // First delete all events
-                await supabase
+                await supabaseClient
                     .from('tracking_events')
                     .delete()
                     .eq('tracking_id', trackingId);
 
                 // Then delete the tracking
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('trackings')
                     .delete()
                     .eq('id', trackingId);
