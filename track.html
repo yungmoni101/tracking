@@ -608,95 +608,24 @@
                     <!-- Tracking Header -->
                     <div class="tracking-header">
                         <div class="shipment-label">Your shipment</div>
-                        <div class="tracking-number">1Z2902E3411093424</div>
+                        <div class="tracking-number">Loading...</div>
                     </div>
 
                     <!-- Delivery Status -->
-                    <div class="delivery-status">
-                        <i class="fas fa-check-circle"></i>
+                    <div class="delivery-status" style="background: #6c757d;">
+                        <i class="fas fa-spinner fa-spin"></i>
                         <div class="delivery-text">
-                            <strong>Delivered On</strong>
-                            <span>Wednesday, November 05 at 3:23 P.M. at Mail Room</span>
+                            <strong>Loading Tracking Information...</strong>
+                            <span>Please wait while we fetch your shipment details</span>
                         </div>
                     </div>
 
                     <!-- Delivery Details -->
                     <div class="delivery-details">
-                        <div class="detail-row">
-                            <span class="detail-label">Delivered To</span>
-                            <span class="detail-value">MONTREAL, CA</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Received By</span>
-                            <span class="detail-value">DONALD</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label"></span>
-                            <span class="detail-value">
-                                <a href="#" id="podLink">
-                                    Proof of Delivery
-                                    <i class="fas fa-arrow-right"></i>
-                                </a>
-                            </span>
-                        </div>
                     </div>
 
                     <!-- Timeline -->
                     <div class="timeline-section">
-                        <div class="timeline-item">
-                            <div class="timeline-icon">
-                                <i class="fas fa-tag"></i>
-                            </div>
-                            <div class="timeline-content">
-                                <div class="timeline-title">Label Created</div>
-                                <div class="timeline-location">United Arab Emirates</div>
-                                <div class="timeline-date">11/04/2025, 11:48 A.M</div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-icon">
-                                <i class="fas fa-box"></i>
-                            </div>
-                            <div class="timeline-content">
-                                <div class="timeline-title">Picked Up</div>
-                                <div class="timeline-location">Dubai, United Arab Emirates</div>
-                                <div class="timeline-date">10/05/2025, 1:24 P.M</div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-icon">
-                                <i class="fas fa-plane"></i>
-                            </div>
-                            <div class="timeline-content">
-                                <div class="timeline-title">On the Way</div>
-                                <div class="timeline-location">In Transit</div>
-                                <div class="timeline-date">11/05/2025, 6:07 A.M</div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-icon">
-                                <i class="fas fa-truck"></i>
-                            </div>
-                            <div class="timeline-content">
-                                <div class="timeline-title">Out for Delivery</div>
-                                <div class="timeline-location">Lemine, BC, Canada</div>
-                                <div class="timeline-date">11/05/2025, 10:17 A.M</div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-icon">
-                                <i class="fas fa-check"></i>
-                            </div>
-                            <div class="timeline-content">
-                                <div class="timeline-title">Delivered</div>
-                                <div class="timeline-location">MONTREAL, CA</div>
-                                <div class="timeline-date">11/05/2025, 3:23 P.M</div>
-                            </div>
-                        </div>
                     </div>
 
                     <div style="padding: 0 30px 30px;">
@@ -775,39 +704,39 @@
                 
                 <div class="pod-section">
                     <div class="pod-label">Tracking Number</div>
-                    <div class="pod-value" id="podTrackingNumber">1Z2902E30419053424</div>
+                    <div class="pod-value" id="podTrackingNumber"></div>
                 </div>
 
                 <div class="pod-grid">
                     <div>
                         <div class="pod-label">Service</div>
-                        <div class="pod-value" id="podService">UPS Express Saver®</div>
+                        <div class="pod-value" id="podService"></div>
                     </div>
                     <div>
                         <div class="pod-label">Shipped / Billed On</div>
-                        <div class="pod-value" id="podShippedOn">10/28/2025</div>
+                        <div class="pod-value" id="podShippedOn"></div>
                     </div>
                 </div>
 
                 <div class="pod-grid">
                     <div>
                         <div class="pod-label">Delivered On</div>
-                        <div class="pod-value" id="podDeliveredOn">11/05/2025 3:23 PM</div>
+                        <div class="pod-value" id="podDeliveredOn"></div>
                     </div>
                     <div>
                         <div class="pod-label">Received By</div>
-                        <div class="pod-value" id="podReceivedBy">DONALD</div>
+                        <div class="pod-value" id="podReceivedBy"></div>
                     </div>
                 </div>
 
                 <div class="pod-grid">
                     <div>
                         <div class="pod-label">Delivered To</div>
-                        <div class="pod-value" id="podDeliveredTo">MONTREAL, CA</div>
+                        <div class="pod-value" id="podDeliveredTo"></div>
                     </div>
                     <div>
                         <div class="pod-label">Delivery Location</div>
-                        <div class="pod-value" id="podDeliveryLocation">Mail Room</div>
+                        <div class="pod-value" id="podDeliveryLocation"></div>
                     </div>
                 </div>
 
@@ -1275,300 +1204,16 @@
             <div class="shipping-modal-body">
                 <div id="progressTab" class="tab-content">
                     <div class="info-box">
-                        <strong>You've Got the Details</strong><br>
-                        You're seeing what customer service agents would share with you. If you need additional information, visit <a href="#">Contact Us</a> or contact your shipper.
+                        <strong>Loading...</strong><br>
+                        Please wait while we load your shipment details.
                     </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/05/2025</div>
-                            <div class="time">3:23 PM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Delivered</div>
-                            <div class="event-location">DELIVERED<br>MONTREAL, CA</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/05/2025</div>
-                            <div class="time">10:11 AM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Out for Delivery</div>
-                            <div class="event-location">Out For Delivery Today<br>MONTREAL, CA</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/05/2025</div>
-                            <div class="time">9:36 AM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Processing at UPS Facility</div>
-                            <div class="event-location">Lachine, QC, Canada</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/05/2025</div>
-                            <div class="time">5:07 AM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">On the Way</div>
-                            <div class="event-location">Import Scan<br>Lachine, QC, Canada</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/05/2025</div>
-                            <div class="time">5:07 AM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Warehouse Scan</div>
-                            <div class="event-location">Lachine, QC, Canada</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/04/2025</div>
-                            <div class="time">7:02 PM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Your package has cleared Customs and it is on its way</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/04/2025</div>
-                            <div class="time">7:02 PM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Your package has been released by the government agency</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/04/2025</div>
-                            <div class="time">6:27 PM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Warehouse Scan</div>
-                            <div class="event-location">Lachine, QC, Canada</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/03/2025</div>
-                            <div class="time">6:42 AM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Import Scan</div>
-                            <div class="event-location">Lachine, QC, Canada</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/03/2025</div>
-                            <div class="time">2:51 AM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Arrived at Facility</div>
-                            <div class="event-location">Lachine, QC, Canada</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/02/2025</div>
-                            <div class="time">7:55 PM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Arrived at Facility</div>
-                            <div class="event-location">Mirabel International Airport, QC, Canada</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/02/2025</div>
-                            <div class="time">7:47 PM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Departed from Facility</div>
-                            <div class="event-location">Mirabel International Airport, QC, Canada</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/02/2025</div>
-                            <div class="time">7:42 PM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Your package is pending release from a Government Agency. Once they've  released it, your package will be on its way</div>
-                            <div class="event-location">Mirabel, QC, Canada</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/02/2025</div>
-                            <div class="time">7:41 PM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Your package is pending release from a Government Agency. We'll notify the receiver or sender if information is needed</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/02/2025</div>
-                            <div class="time">6:42 AM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Departed from Facility</div>
-                            <div class="event-location">Mirabel International Airport, QC, Canada</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/02/2025</div>
-                            <div class="time">5:57 PM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Departed from Facility</div>
-                            <div class="event-location">Louisville, KY, United States</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/02/2025</div>
-                            <div class="time">6:41 AM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Arrived at Facility</div>
-                            <div class="event-location">Louisville, KY, United States</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">11/02/2025</div>
-                            <div class="time">4:04 AM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Departed from Facility</div>
-                            <div class="event-location">Koeln, Germany</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">10/31/2025</div>
-                            <div class="time">6:25 PM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Departed from Facility</div>
-                            <div class="event-location">Dubai, United Arab Emirates</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">10/31/2025</div>
-                            <div class="time">12:47 PM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Export Scan</div>
-                            <div class="event-location">Dubai, United Arab Emirates</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">10/30/2025</div>
-                            <div class="time">10:35 PM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Arrived at Facility</div>
-                            <div class="event-location">Dubai, United Arab Emirates</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">10/30/2025</div>
-                            <div class="time">10:20 PM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Departed from Facility</div>
-                            <div class="event-location">Dubai, United Arab Emirates</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">10/30/2025</div>
-                            <div class="time">5:24 PM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">We Have Your Package</div>
-                            <div class="event-location">Arrived at Facility<br>Dubai, United Arab Emirates</div>
-                        </div>
-                    </div>
-
-                    <div class="tracking-event">
-                        <div class="event-date">
-                            <div class="date">10/28/2025</div>
-                            <div class="time">11:48 AM</div>
-                        </div>
-                        <div class="event-details">
-                            <div class="event-title">Label Created</div>
-                            <div class="event-location">Shipper created a label, UPS has not received the package yet<br>United Arab Emirates</div>
-                        </div>
-                    </div>
-
-                    <button class="close-button">Close</button>
                 </div>
 
                 <div id="detailsTab" class="tab-content" style="display: none;">
                     <div class="info-box">
-                        <strong>You've Got the Details</strong><br>
-                        You're seeing what customer service agents would share with you. If you need additional information, visit <a href="#">Contact Us</a> or contact your shipper.
+                        <strong>Loading...</strong><br>
+                        Please wait while we load your shipment details.
                     </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; background: #fff; border: 2px solid #ffb500; padding: 25px; border-radius: 8px;">
-                        <div>
-                            <div class="pod-label">Tracking Number</div>
-                            <div class="pod-value" style="color: #333; font-weight: 500;">1Z2902E30419053424</div>
-                        </div>
-                        <div>
-                            <div class="pod-label">Shipped / Billed On</div>
-                            <div class="pod-value" style="color: #333; font-weight: 500;">10/28/2025</div>
-                        </div>
-                        <div>
-                            <div class="pod-label">Service</div>
-                            <div class="pod-value" style="color: #333; font-weight: 500;">UPS Express Saver®</div>
-                        </div>
-                        <div>
-                            <div class="pod-label">Shipment Category</div>
-                            <div class="pod-value" style="color: #333; font-weight: 500;">Package</div>
-                        </div>
-                    </div>
-
-                    <button class="close-button" style="margin-top: 30px;">Close</button>
                 </div>
             </div>
         </div>
