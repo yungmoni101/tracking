@@ -803,8 +803,8 @@
                 e.event_description?.toLowerCase().includes('delivered')
             );
 
-            // Get the most recent event (first in array since sorted newest first)
-            const latestEvent = events[0];
+            // Get the most recent event with a title (first in array since sorted newest first)
+            const latestEvent = events.find(e => e.event_title && e.event_title.trim() !== '');
 
             // Update delivery status
             const deliveryStatusDiv = document.querySelector('.delivery-status');
@@ -823,8 +823,8 @@
                     </div>
                 `;
             } else if (latestEvent) {
-                // Package is in transit - show latest status
-                const statusText = latestEvent.event_title || latestEvent.event_description || 'In Transit';
+                // Package is in transit - show latest status (only event title)
+                const statusText = latestEvent.event_title || 'In Transit';
                 deliveryStatusDiv.style.background = '#d32f2f';
                 deliveryStatusDiv.innerHTML = `
                     <i class="fas fa-shipping-fast"></i>
